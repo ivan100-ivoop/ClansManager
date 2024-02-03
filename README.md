@@ -2,7 +2,7 @@
 # ClansManager
 
 ClansManager is plugin for minecraft java.
-This plugin allow you to create clans with bank also clan chat and clan bank.
+This plugin allow you to create clans with bank also clan chat and clan chest.
 ClansManager also have admin commands to easy manager player clans.
 
 # Player Command
