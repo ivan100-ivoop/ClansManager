@@ -36,8 +36,9 @@ ClansManager also have admin commands to easy manager player clans.
 - /clan admin clear <clanName>
 - /clan admin spyChat <enable. disable> <clanName>
 - /clan admin chest <clanName>
+- /clan reload
 
-## Depends
+## SoftDepends
  - [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245)
  - [LuckPerms](https://luckperms.net)
  - [Vault](https://www.spigotmc.org/resources/vault.34315)
