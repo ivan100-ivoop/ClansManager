@@ -1,0 +1,21 @@
+name: ClansManager
+version: '${project.version}'
+main: org.github.clansmanager.Loader
+api-version: '1.20'
+authors: [Ivan]
+softdepend: [PlaceholderAPI, LuckPerms, Vault]
+
+commands:
+  clan:
+    description: Master command for ClanManager
+    permission: clanmanager.usage
+    usage: "Usage: /clan"
+
+permissions:
+  clanmanager:
+    usage:
+      permission-message: You do not have permission to use this command.
+      default: op
+    reload:
+      permission-message: You do not have permission to use this command.
+      default: op

@@ -1,0 +1,40 @@
+## language file default is en.yml
+lang: "en"
+
+## clan prefix length default is 8
+clan-prefix-max: 8
+
+## clan members length default is 3
+max-clan-players: 3
+
+## for chat tab or sb
+clan-prefix-present: "&8「%prefix%&8」"
+
+## clan chat present
+clan-chat-present: "&8「%clan_prefix_clear%&8」&r%player_name%&f: &b&l%message%"
+
+## present in top's
+clan-top-kills-preset: "{clan} &6&l{amount} &aKills"
+clan-top-death-preset: "{clan} &6&l{amount} &cDeaths"
+clan-top-balance-preset: "{clan} &6&l{amount}"
+
+## clan list menu
+clan-view:
+  menu-title: "&7&lClans"
+  type: END_CRYSTAL
+  title: "%clans_prefix%"
+  lore:
+    - "Name: %clans_name%"
+    - "Owner: %clans_owner%"
+    - "AllMembers: %clans_members_count%"
+
+## database configuration
+## type can be sqlite(local file) or mysql (remote database server)
+db:
+  prefix: clansmanager_
+  type: sqlite
+  host: localhost
+  port: 3306
+  name: clansmanager
+  user: root
+  pass: ""
