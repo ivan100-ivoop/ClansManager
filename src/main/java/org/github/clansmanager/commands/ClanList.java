@@ -112,7 +112,7 @@ public class ClanList extends SubCommand {
     private String getTitle(int index) {
         String title = this.shem.getString("title", "%clans_prefix%");
 
-        String[] placeholders = {"%clans_prefix%", "%clans_name%", "%clans_owner%", "%clans_members%", "%clans_members_count%"};
+        String[] placeholders = {"%clans_prefix%", "%clans_prefix_clear%","%clans_name%", "%clans_owner%", "%clans_members%", "%clans_members_count%", "%clans_kills%", "%clans_death%", "%clans_balance%"};
 
         for (String placeholder : placeholders) {
             if (title.contains(placeholder)) {

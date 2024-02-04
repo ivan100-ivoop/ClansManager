@@ -59,14 +59,15 @@ public class ClansManagerAPI extends PlaceholderExpansion {
             case "name":
                 return clan.getName();
             case "prefix":
-                if(!clan.getPrefix().isEmpty()){
+                if(!clan.getPrefix().isEmpty() || clan.getPrefix().equalsIgnoreCase("null")) {
                     return createPrefix(clan.getPrefix());
                 }
-                return "";
+                return " ";
             case "prefix_clear":
-                if(!clan.getPrefix().isEmpty()) {
+                if(!clan.getPrefix().isEmpty() || clan.getPrefix().equalsIgnoreCase("null")) {
                     return clan.getPrefix();
                 }
+                return " ";
             case "kills":
                 return String.valueOf(clan.getKills());
             case "death":

@@ -8,6 +8,7 @@ import org.github.clansmanager.utils.Clan;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 
 public class AllClansManager extends PlaceholderExpansion {
 
@@ -54,12 +55,13 @@ public class AllClansManager extends PlaceholderExpansion {
             try {
                 return Integer.parseInt(params.substring(lastIndex + 1));
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                Loader.logger.log(Level.WARNING, "Invalid ID format: " + params, e);
             }
         }
 
         return -1;
     }
+
 
 
     private String decodeClans(String params, List<Clan> clans) {
@@ -88,17 +90,17 @@ public class AllClansManager extends PlaceholderExpansion {
             }
 
             if (params.contains("prefix")) {
-                if(!clan.getPrefix().isEmpty()) {
+                if(!clan.getPrefix().isEmpty() || clan.getPrefix().equalsIgnoreCase("null")) {
                     return createPrefix(clan.getPrefix());
                 }
-                return "";
+                return " ";
             }
 
             if (params.contains("prefix_clear")) {
-                if(!clan.getPrefix().isEmpty()) {
+                if(!clan.getPrefix().isEmpty() || clan.getPrefix().equalsIgnoreCase("null")) {
                     return clan.getPrefix();
                 }
-                return "";
+                return " ";
             }
 
             if (params.contains("kills")) {
