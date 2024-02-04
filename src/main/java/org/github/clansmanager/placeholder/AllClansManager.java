@@ -90,14 +90,14 @@ public class AllClansManager extends PlaceholderExpansion {
             }
 
             if (params.contains("prefix")) {
-                if(!clan.getPrefix().isEmpty() || !clan.getPrefix().equalsIgnoreCase("null")) {
+                if(clan.getPrefix() !=null && !clan.getPrefix().isEmpty() || !clan.getPrefix().equalsIgnoreCase("null")) {
                     return createPrefix(clan.getPrefix());
                 }
                 return " ";
             }
 
             if (params.contains("prefix_clear")) {
-                if(!clan.getPrefix().isEmpty() || !clan.getPrefix().equalsIgnoreCase("null")) {
+                if(clan.getPrefix() !=null && !clan.getPrefix().isEmpty() || !clan.getPrefix().equalsIgnoreCase("null")) {
                     return clan.getPrefix();
                 }
                 return " ";
