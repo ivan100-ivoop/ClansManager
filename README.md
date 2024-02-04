@@ -76,6 +76,7 @@ ClansManager also have admin commands to easy manager player clans.
 
 # Permission
 
+- clansmanager.update (Default: op)
 - clansmanager.reload (Default: op)
 - clansmanager.clan (Default: op)
 - clansmanager.set (Default: op)

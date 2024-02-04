@@ -1,6 +1,9 @@
 ## language file default is en.yml
 lang: "en"
 
+# In minute.
+update-checker: 10
+
 ## clan prefix length default is 8
 clan-prefix-max: 8
 

@@ -13,6 +13,9 @@ commands:
 
 permissions:
   clansmanager:
+    update:
+      permission-message: You do not have permission to use this command.
+      default: op
     reload:
       permission-message: You do not have permission to use this command.
       default: op

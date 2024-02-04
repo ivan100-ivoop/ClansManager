@@ -12,10 +12,7 @@ import org.github.clansmanager.hook.PlayerDeathListener;
 import org.github.clansmanager.placeholder.AllClansManager;
 import org.github.clansmanager.placeholder.ClansManagerAPI;
 import org.github.clansmanager.placeholder.ClansTop;
-import org.github.clansmanager.utils.Clan;
-import org.github.clansmanager.utils.CommandsLoader;
-import org.github.clansmanager.utils.DBManager;
-import org.github.clansmanager.utils.Utils;
+import org.github.clansmanager.utils.*;
 
 import java.io.File;
 import java.util.*;
@@ -36,12 +33,14 @@ public final class Loader extends JavaPlugin {
     private ClansManagerAPI clansManagerAPI;
     private AllClansManager allClansManager;
     private ClansTop clansTop;
+    private Update updater = null;
 
     public static List<ClanBattleGame> games = new ArrayList<>();
     @Override
     public void onEnable() {
         this.dataDir = new File(getDataFolder(), "utils");
         this.init();
+        this.updater.start();
 
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         logger.log(Level.INFO, "Successful enabled!");
@@ -55,7 +54,7 @@ public final class Loader extends JavaPlugin {
     }
 
     public boolean reloadPlugin() {
-
+        this.updater.stop();
         Iterator<ClanBattleGame> iterator = Loader.games.iterator();
         while (iterator.hasNext()) {
             ClanBattleGame game = iterator.next();
@@ -74,6 +73,7 @@ public final class Loader extends JavaPlugin {
         clansManagerAPI.register();
         allClansManager.register();
         clansTop.register();
+        this.updater.start();
         return true;
     }
 
@@ -137,6 +137,9 @@ public final class Loader extends JavaPlugin {
         clansManagerAPI.register();
         allClansManager.register();
         clansTop.register();
+
+        updater = new Update();
+        updater.consoleCheck();
 
         this.restoreInv();
     }
