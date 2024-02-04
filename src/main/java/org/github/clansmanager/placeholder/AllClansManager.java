@@ -6,6 +6,7 @@ import org.github.clansmanager.CManager;
 import org.github.clansmanager.Loader;
 import org.github.clansmanager.utils.Clan;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class AllClansManager extends PlaceholderExpansion {
@@ -43,10 +44,10 @@ public class AllClansManager extends PlaceholderExpansion {
             return "";
 
         return decodeClans(params, this.clans.getAllClans());
+
     }
 
     private int getID(String params) {
-        System.out.println(params);
         int lastIndex = params.lastIndexOf('_');
 
         if (lastIndex != -1 && lastIndex < params.length() - 1) {
@@ -62,6 +63,7 @@ public class AllClansManager extends PlaceholderExpansion {
 
 
     private String decodeClans(String params, List<Clan> clans) {
+        this.clans.disconnect();
 
         if(clans == null)
             return "";

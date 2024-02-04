@@ -36,7 +36,7 @@ public class Remove extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "clansmanager.create";
+        return "clansmanager.remove";
     }
 
     @Override
@@ -51,32 +51,32 @@ public class Remove extends SubCommand {
             Player player = (Player) sender;
 
             if (!player.hasPermission(this.getPermission()) && !player.isOp()) {
-                player.sendMessage(Messages.withPrefix("not-permission", "&4Your do not have permission to run this command!"));
+                player.sendMessage(Messages.withPrefix("errors.not-permission", "&4Your do not have permission to run this command!"));
                 return true;
             }
             Clan clan = this.clans.removeClan(player);
 
             if(clan == null){
-                player.sendMessage(Messages.withPrefix("error-clan-remove", "&cClan is not removed!"));
+                player.sendMessage(Messages.withPrefix("errors.clan-remove", "&cClan is not removed!"));
                 return true;
             }
-            player.sendMessage(Messages.withPrefix("successful-clan-remove", "&aClan Successful removed!"));
+            player.sendMessage(Messages.withPrefix("success.clan-remove", "&aClan Successful removed!"));
             return true;
         } else {
             if(args.length < 1) {
-                sender.sendMessage(Messages.withPrefix("missing-clan-name", "&cClan name is required!"));
+                sender.sendMessage(Messages.withPrefix("errors.clan-name", "&cClan name is required!"));
                 return false;
             }
             Clan clan = this.clans.removeClan(args[0]);
 
             if(clan == null){
-                sender.sendMessage(Messages.withPrefix("error-clan-remove", "&cClan is not removed!"));
+                sender.sendMessage(Messages.withPrefix("errors.clan-remove", "&cClan is not removed!"));
                 return true;
             }
 
             this.clanChest.removeChest(clan);
 
-            sender.sendMessage(Messages.withPrefix("successful-clan-remove", "&aClan Successful removed!"));
+            sender.sendMessage(Messages.withPrefix("success.clan-remove", "&aClan Successful removed!"));
             return true;
         }
 

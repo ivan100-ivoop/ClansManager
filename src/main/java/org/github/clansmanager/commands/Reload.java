@@ -36,22 +36,20 @@ public class Reload extends SubCommand {
     public boolean execute(CommandSender sender, String[] args) {
 
         if((sender instanceof Player) && !sender.hasPermission(this.getPermission())){
-            sender.sendMessage(Messages.withPrefix("not-permission", "&4Your do not have permission to run this command!"));
+            sender.sendMessage(Messages.withPrefix("errors.not-permission", "&4Your do not have permission to run this command!"));
             return true;
         }
 
         if(!Loader.getPlugin(Loader.class).reloadPlugin()){
-            if(sender instanceof Player){
-                sender.sendMessage(Messages.withPrefix("not-successful-reload", "&cNot successful reload!"));
-            } else {
-                sender.sendMessage(Messages.onlyMessage("not-successful-reload", "&cNot successful reload!", true));
-            }
+            sender.sendMessage(Messages.withPrefix("error.reload", "&cNot successful reload!"));
+        } else {
+            sender.sendMessage(Messages.onlyMessage("error.reload", "&cNot successful reload!", true));
         }
 
         if(sender instanceof Player){
-            sender.sendMessage(Messages.withPrefix("successful-reload", "&aSuccessful reload!"));
+            sender.sendMessage(Messages.withPrefix("success.reload", "&aSuccessful reload!"));
         } else {
-            sender.sendMessage(Messages.onlyMessage("successful-reload", "&aSuccessful reload!", true));
+            sender.sendMessage(Messages.onlyMessage("success.reload", "&aSuccessful reload!", true));
         }
 
         return true;

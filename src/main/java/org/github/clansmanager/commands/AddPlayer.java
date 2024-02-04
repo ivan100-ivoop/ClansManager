@@ -1,6 +1,5 @@
 package org.github.clansmanager.commands;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -15,7 +14,6 @@ import org.github.clansmanager.utils.Messages;
 import org.github.clansmanager.utils.SubCommand;
 import org.github.clansmanager.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,19 +60,19 @@ public class AddPlayer extends SubCommand {
             Player player = (Player) sender;
 
             if (args.length < 1) {
-                player.sendMessage(Messages.withPrefix("missing-clan-player", "&cTo add new player your need to include him name!"));
+                player.sendMessage(Messages.withPrefix("errors.invite-player", "&cTo add new player your need to include him name!"));
                 return true;
             }
 
             Player newMemberPlayer = Bukkit.getPlayer(args[0]);
 
             if (newMemberPlayer == null) {
-                player.sendMessage(Messages.withPrefix("player-offline", "&cThis player is offline!"));
+                player.sendMessage(Messages.withPrefix("errors.player-offline", "&cThis player is offline!"));
                 return true;
             }
 
            if (this.clans.isMemberOrOwner(newMemberPlayer)) {
-                player.sendMessage(Messages.withPrefix("already-clan-player", "&cThis player already is clan member!"));
+                player.sendMessage(Messages.withPrefix("errors.clan-already-member", "&cThis player already is clan member!"));
                 return true;
             }
 
@@ -83,30 +81,30 @@ public class AddPlayer extends SubCommand {
                 clan = this.clans.getClanByMemberPlayer(player);
 
             if (clan == null) {
-                player.sendMessage(Messages.withPrefix("error-clan-not-found", "&cClan not found!"));
+                player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
                 return true;
             }
 
             if (clan.getMembers().size() >= this.maxPlayers) {
-                player.sendMessage(Messages.withPrefix("error-clan-max-player", "&cYour have max count of players!"));
+                player.sendMessage(Messages.withPrefix("errors.max-player", "&cYour have max count of players!"));
                 return true;
             }
 
-            TextComponent main = new TextComponent(Messages.withPrefix("clan-invite", "&bYou have been invited to the clan %clan_name% click to accept it").replace("%clan_name%", clan.getName()));
-            main.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Messages.onlyMessage("clan-accept", "&aAccept clan invite", false)).create()));
+            TextComponent main = new TextComponent(Messages.withPrefix("clan.invite", "&bYou have been invited to the clan %clan_name% click to accept it").replace("%clan_name%", clan.getName()));
+            main.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Messages.onlyMessage("clan.accept", "&aAccept clan invite", false)).create()));
             main.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/clan accept " + clan.getName()));
 
             if(!this.clans.invitePlayer(newMemberPlayer, clan.getId())) {
-                player.sendMessage(Messages.withPrefix("already-clan-player", "&cThis player already is clan member!"));
+                player.sendMessage(Messages.withPrefix("errors.clan-already-member", "&cThis player already is clan member!"));
                 return true;
             }
 
             newMemberPlayer.spigot().sendMessage(main);
-            player.sendMessage(Messages.withPrefix("clan-sender-invite", "&bYou have been invited %player_name% to clan %clan_name%!").replace("%clan_name%", clan.getName()).replace("%player_name%", newMemberPlayer.getName()));
+            player.sendMessage(Messages.withPrefix("success.invite", "&bYou have been invited %player_name% to clan %clan_name%!").replace("%clan_name%", clan.getName()).replace("%player_name%", newMemberPlayer.getName()));
             return true;
         }
 
-        sender.sendMessage(Messages.onlyMessage("player-only-command", "&cThis command can be run only from a player!", true));
+        sender.sendMessage(Messages.onlyMessage("errors.player-only-command", "&cThis command can be run only from a player!", true));
         return true;
     }
 

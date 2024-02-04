@@ -4,13 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.github.clansmanager.CManager;
-import org.github.clansmanager.Loader;
 import org.github.clansmanager.utils.Clan;
-import org.github.clansmanager.utils.DBManager;
 import org.github.clansmanager.utils.Messages;
 import org.github.clansmanager.utils.SubCommand;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,7 +46,7 @@ public class ClanAccept extends SubCommand {
         Clan clan = null;
 
         if(args.length < 1) {
-            sender.sendMessage(Messages.withPrefix("missing-clan-name", "&cClan name is required!"));
+            sender.sendMessage(Messages.withPrefix("errors.clan-name", "&cClan name is required!"));
             return false;
         }
 
@@ -58,7 +55,7 @@ public class ClanAccept extends SubCommand {
             String clanName = args[0];
 
             if(this.clans.isMemberOrOwner(player)){
-                sender.sendMessage(Messages.withPrefix("already-clan-player-invite", "&cYour already is clan member!"));
+                sender.sendMessage(Messages.withPrefix("errors.already-clan-member", "&cYour already is clan member!"));
                 return true;
             }
 
@@ -66,29 +63,29 @@ public class ClanAccept extends SubCommand {
                 clan = this.clans.acceptClan(player, clanName);
 
                 if(clan == null){
-                    sender.sendMessage(Messages.withPrefix("error-clan-not-found", "&cClan not found!"));
+                    sender.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
                     return true;
                 }
 
                 if(clan.isLock()){
-                    sender.sendMessage(Messages.withPrefix("clan-lock", "&cOps Clan is Locked!"));
+                    sender.sendMessage(Messages.withPrefix("errors.clan-locked", "&cOps Clan is Locked!"));
                     return true;
                 }
 
-                player.sendMessage(Messages.withPrefix("clan-accept-invite", "&aYour successful accept clan invite!"));
+                player.sendMessage(Messages.withPrefix("success.accept-invite", "&aYour successful accept clan invite!"));
                 Player newMemberPlayer = Bukkit.getPlayer(clan.getOwner());
 
                 if (newMemberPlayer != null)
-                    newMemberPlayer.sendMessage(Messages.withPrefix("successful-clan-add-player", "&aYour successful add %player_name% to clan %clan_name%!").replace("%player_name%", player.getName()).replace("%clan_name%", clanName));
+                    newMemberPlayer.sendMessage(Messages.withPrefix("clan.add-player", "&aYour successful add %player_name% to clan %clan_name%!").replace("%player_name%", player.getName()).replace("%clan_name%", clanName));
 
                 return true;
             }
 
-            sender.sendMessage(Messages.withPrefix("clan-invite-not", "&cYour not have pending clan invites!"));
+            sender.sendMessage(Messages.withPrefix("errors.empty-invites", "&cYour not have pending clan invites!"));
             return true;
         }
 
-        sender.sendMessage(Messages.onlyMessage("player-only-command", "&cThis command can be run only from a player!", true));
+        sender.sendMessage(Messages.onlyMessage("errors.player-only-command", "&cThis command can be run only from a player!", true));
         return true;
     }
 

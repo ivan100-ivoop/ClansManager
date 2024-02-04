@@ -6,9 +6,12 @@ import net.luckperms.api.model.user.UserManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.github.clansmanager.Loader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -76,6 +79,8 @@ public class Utils {
     public static CachedDataManager getPlayer(String player) {
         UserManager userManager = Loader.getPlugin(Loader.class).api.getUserManager();
         User user = userManager.getUser(player);
+        if(user == null)
+            return null;
         return user.getCachedData();
     }
     public static String getText(String ...args){
@@ -97,6 +102,47 @@ public class Utils {
         if(seconds < 10) sSeconds = "0" + seconds;
 
         return sMinutes + ":" + sSeconds;
+    }
+
+    public static boolean restoreInv(Player player) {
+        try {
+            File invBackup = new File(Loader.instance.saveInv, player.getName() + ".yml");
+            if (invBackup.exists()) {
+                YamlConfiguration invPlayer = new YamlConfiguration();
+                invPlayer.load(invBackup);
+                ArrayList<ItemStack> tempInv = (ArrayList<ItemStack>) invPlayer.getList("inv");
+                for (int i = 0; i < tempInv.size(); i++) {
+                    player.getInventory().setItem(i, tempInv.get(i));
+                }
+                invBackup.delete();
+                return true;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    public static boolean saveInv(Player player) {
+        try {
+            ArrayList<ItemStack> tempInv = new ArrayList<ItemStack>();
+            File invBackup = new File(Loader.instance.saveInv, player.getName() + ".yml");
+            if (!invBackup.exists()) {
+                invBackup.createNewFile();
+                YamlConfiguration invPlayer = new YamlConfiguration();
+                invPlayer.load(invBackup);
+                player.getInventory().forEach(itemStack -> {
+                    tempInv.add(itemStack);
+                });
+                invPlayer.set("inv", tempInv);
+                invPlayer.save(invBackup);
+                player.getInventory().clear();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

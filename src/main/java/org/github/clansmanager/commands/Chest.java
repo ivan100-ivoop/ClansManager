@@ -1,6 +1,5 @@
 package org.github.clansmanager.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.github.clansmanager.CManager;
@@ -50,7 +49,7 @@ public class Chest extends SubCommand {
             Player player = (Player) sender;
 
             if (!player.hasPermission(this.getPermission()) && !player.isOp()) {
-                player.sendMessage(Messages.withPrefix("not-permission", "&4Your do not have permission to run this command!"));
+                player.sendMessage(Messages.withPrefix("errors.not-permission", "&4Your do not have permission to run this command!"));
                 return true;
             }
 
@@ -60,23 +59,24 @@ public class Chest extends SubCommand {
                 clan = this.clans.getClanByMemberPlayer(player);
 
             if(clan == null){
-                sender.sendMessage(Messages.withPrefix("error-clan-not-found", "&cClan not found!"));
+                sender.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
                 return true;
             }
 
             if(clan.isLock() && clan.isMember(player)){
-                sender.sendMessage(Messages.withPrefix("clan-lock", "&cOps Clan is Locked!"));
+                sender.sendMessage(Messages.withPrefix("errors.clan-locked", "&cOps Clan is Locked!"));
                 return true;
             }
 
             if(this.clanChest.hasChest(clan)) {
+
                 this.clanChest.createEmptyChest(clan, this.clanChest.calculateSlots(Utils.getPlayer(clan.getOwner())));
             }
 
             this.clanChest.openChest(clan, player);
             return true;
         }
-        sender.sendMessage(Messages.onlyMessage("player-only-command", "&cThis command can be run only from a player!", true));
+        sender.sendMessage(Messages.onlyMessage("errors.player-only-command", "&cThis command can be run only from a player!", true));
         return true;
     }
 

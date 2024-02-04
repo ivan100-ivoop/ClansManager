@@ -6,8 +6,6 @@ import org.github.clansmanager.CManager;
 import org.github.clansmanager.Loader;
 import org.github.clansmanager.utils.Clan;
 
-import java.util.List;
-
 public class ClansManagerAPI extends PlaceholderExpansion {
 
     private final CManager clans;
@@ -56,6 +54,7 @@ public class ClansManagerAPI extends PlaceholderExpansion {
         return "";
     }
     private String placeSend(String params,Clan clan){
+        this.clans.disconnect();
         switch (params) {
             case "name":
                 return clan.getName();

@@ -56,7 +56,7 @@ public class Chat extends SubCommand {
             Player player = (Player) sender;
 
             if (!player.hasPermission(this.getPermission()) && !player.isOp()) {
-                player.sendMessage(Messages.withPrefix("not-permission", "&4Your do not have permission to run this command!"));
+                player.sendMessage(Messages.withPrefix("errors.not-permission", "&4Your do not have permission to run this command!"));
                 return true;
             }
 
@@ -66,27 +66,27 @@ public class Chat extends SubCommand {
                 clan = this.clans.getClanByMemberPlayer(player);
 
             if (clan == null) {
-                sender.sendMessage(Messages.withPrefix("error-clan-not-found", "&cClan not found!"));
+                sender.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
                 return true;
             }
 
             if(clan.isLock() && clan.isMember(player)){
-                sender.sendMessage(Messages.withPrefix("clan-lock", "&cOps Clan is Locked!"));
+                sender.sendMessage(Messages.withPrefix("errors.clan-locked", "&cOps Clan is Locked!"));
                 return true;
             }
 
-            if(clan.isOwner(player)){
-                ChatPlayer = "&c&l" + player.getName();
-            } else {
-                ChatPlayer = "&a&l" + player.getName();
-            }
+            ChatPlayer = String.format("%s%s",
+                    (clan.isOwner(player) ? Loader.instance.getConfig().getString("clan-chat-owner-color", "&c&l") : Loader.instance.getConfig().getString("clan-chat-member-color", "&a&l")),
+                    player.getName()
+            );
+
             String message = Utils.getText(args);
             String chat = Utils.fixColors(PlaceholderAPI.setPlaceholders(player, this.chat.replace("%player_name%", ChatPlayer).replace("%message%", message)));
             AdminCommands.spyClanChat(chat, player);
             this.sendAllPlayer(clan, chat);
             return true;
         }
-        sender.sendMessage(Messages.onlyMessage("player-only-command", "&cThis command can be run only from a player!", true));
+        sender.sendMessage(Messages.onlyMessage("errors.player-only-command", "&cThis command can be run only from a player!", true));
         return true;
     }
 

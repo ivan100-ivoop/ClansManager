@@ -99,6 +99,9 @@ public class DBManager {
     }
 
     public boolean execute(String query, Object... parameters) {
+        if (!isConnected()) {
+            connect();
+        }
         if (isConnected()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -110,6 +113,8 @@ public class DBManager {
                 return true;
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                disconnect();
             }
         }
         return false;
@@ -124,6 +129,9 @@ public class DBManager {
     }
 
     public boolean executeInsert(String insertQuery, Object... parameters) {
+        if (!isConnected()) {
+            connect();
+        }
         if (isConnected()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < parameters.length; i++) {
@@ -137,18 +145,25 @@ public class DBManager {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                disconnect();
             }
         }
         return false;
     }
 
     public boolean emptyTable(String tableName) {
+        if (!isConnected()) {
+            connect();
+        }
         try {
             String deleteQuery = "DELETE FROM " + tableName;
             this.execute(deleteQuery);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            disconnect();
         }
         return false;
     }
@@ -156,7 +171,9 @@ public class DBManager {
 
     public List<Object[]> executeQuery(String query, Object... parameters) {
         List<Object[]> results = new ArrayList<>();
-
+        if (!isConnected()) {
+            connect();
+        }
         if (isConnected()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 for (int i = 0; i < parameters.length; i++) {
@@ -177,6 +194,8 @@ public class DBManager {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                disconnect();
             }
         }
 

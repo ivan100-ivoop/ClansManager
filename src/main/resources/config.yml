@@ -11,6 +11,8 @@ max-clan-players: 3
 clan-prefix-present: "&8「%prefix%&8」"
 
 ## clan chat present
+clan-chat-owner-color: "&c&l"
+clan-chat-member-color: "&a&l"
 clan-chat-present: "&8「%clan_prefix_clear%&8」&r%player_name%&f: &b&l%message%"
 
 ## present in top's
@@ -38,3 +40,9 @@ db:
   name: clansmanager
   user: root
   pass: ""
+
+## battle settings
+battle-allow: true
+match-time: 1
+timer-starting: 3
+start-timer: 5

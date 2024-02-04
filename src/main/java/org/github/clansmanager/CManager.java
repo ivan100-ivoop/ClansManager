@@ -259,10 +259,10 @@ public class CManager {
                         Player newMemberPlayer = Bukkit.getPlayer(member);
 
                         if (newMemberPlayer != null) {
-                            newMemberPlayer.sendMessage(Messages.withPrefix("clan-kick-notify", "&eYour are kick from clan %clan_name%").replace("%clan_name%", clan.getName()));
+                            newMemberPlayer.sendMessage(Messages.withPrefix("clan.kick-notify", "&eYour are kick from clan %clan_name%").replace("%clan_name%", clan.getName()));
                         }
 
-                        owner.sendMessage(Messages.withPrefix("clan-kick-success", "&eYour successful kick player %player% from clan %clan_name%!").replace("%player%", member).replace("%clan_name%", clan.getName()));
+                        owner.sendMessage(Messages.withPrefix("success.kick-success", "&eYour successful kick player %player% from clan %clan_name%!").replace("%player%", member).replace("%clan_name%", clan.getName()));
                         this.database.execute("DELETE FROM " + this.database.fixName("players") + " WHERE player_name=? AND clan_id=?", member, clan.getId());
                     }
                 }
@@ -430,6 +430,8 @@ public class CManager {
     }
 
     public boolean isMemberOrOwner(Player target){
+        if(!this.database.isConnected())
+            this.database.connect();
         List<Clan> clans = this.getAllClans();
 
         for (Clan clan : clans) {
@@ -637,6 +639,7 @@ public class CManager {
             this.database.connect();
 
         List<Object[]> rows = this.database.executeQuery(this.getQuery[6]);
+
         if(rows != null && rows.size() >= 0) {
             for (Object[] row : rows) {
                 clan.add(new Clan()
@@ -708,7 +711,7 @@ public class CManager {
     private void createTable(){
         this.database.connect();
         if (!this.database.tableExists(this.database.fixName("clans"))) {
-            if(!this.database.isMysql()) {
+            if (!this.database.isMysql()) {
                 this.database.execute("CREATE TABLE IF NOT EXISTS " + this.database.fixName("clans") + " (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "clan_name VARCHAR (255)," +
@@ -722,8 +725,8 @@ public class CManager {
                         "clan_base_location_z DOUBLE," +
                         "clan_base_location_pitch DOUBLE," +
                         "clan_base_location_yaw DOUBLE," +
-                        "clan_death INTEGER NULL,"+
-                        "clan_kills INTEGER NULL,"+
+                        "clan_death INTEGER NULL," +
+                        "clan_kills INTEGER NULL," +
                         "clan_lock BOOLEAN NULL," +
                         "UNIQUE (id)" +
                         ");");
@@ -733,33 +736,50 @@ public class CManager {
                         "  `clan_name` varchar(255) NOT NULL," +
                         "  `clan_owner` varchar(255) NOT NULL," +
                         "  `clan_prefix` varchar(255) NULL," +
-                        "  `clan_balance` double NOT NULL,"+
-                        "  `clan_rank` varchar(111) NOT NULL,"+
+                        "  `clan_balance` double NOT NULL," +
+                        "  `clan_rank` varchar(111) NOT NULL," +
                         "  `clan_base_location_world` varchar(255) NOT NULL," +
-                        "  `clan_base_location_x` double NOT NULL,"+
-                        "  `clan_base_location_y` double NOT NULL,"+
-                        "  `clan_base_location_z` double NOT NULL,"+
-                        "  `clan_base_location_pitch` double NOT NULL,"+
-                        "  `clan_base_location_yaw` double NOT NULL,"+
-                        "  `clan_death` varchar(111) NULL,"+
-                        "  `clan_kills` varchar(111) NULL,"+
-                        "  `clan_lock` boolean NULL,"+
+                        "  `clan_base_location_x` double NOT NULL," +
+                        "  `clan_base_location_y` double NOT NULL," +
+                        "  `clan_base_location_z` double NOT NULL," +
+                        "  `clan_base_location_pitch` double NOT NULL," +
+                        "  `clan_base_location_yaw` double NOT NULL," +
+                        "  `clan_death` varchar(111) NULL," +
+                        "  `clan_kills` varchar(111) NULL," +
+                        "  `clan_lock` boolean NULL," +
                         ");");
                 this.database.execute("ALTER TABLE " + this.database.fixName("clans") + " ADD PRIMARY KEY (`id`);");
                 this.database.execute("ALTER TABLE " + this.database.fixName("clans") + " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;");
             }
+        }
 
-            if (!this.database.tableExists(this.database.fixName("players")) || !this.database.tableExists(this.database.fixName("invite"))) {
+        if(!this.database.tableExists(this.database.fixName("invite"))){
+            if(!this.database.isMysql()) {
+                this.database.execute("CREATE TABLE IF NOT EXISTS " + this.database.fixName("invite") + " (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "clan_name VARCHAR (255)," +
+                        "clan_id INTEGER," +
+                        "player_name VARCHAR (255)," +
+                        "UNIQUE (id)" +
+                        ");");
+            } else {
+                this.database.execute("CREATE TABLE IF NOT EXISTS " + this.database.fixName("invite") + " (" +
+                        "  `id` int(11) NOT NULL," +
+                        "  `clan_id` int(11) NOT NULL," +
+                        "  `clan_name` varchar(255) NOT NULL," +
+                        "  `player_name` varchar(255) NOT NULL," +
+                        ");");
+
+                this.database.execute("ALTER TABLE " + this.database.fixName("invite") + " ADD PRIMARY KEY (`id`);");
+                this.database.execute("ALTER TABLE " + this.database.fixName("invite") + " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;");
+
+            }
+        }
+
+            if (!this.database.tableExists(this.database.fixName("players"))) {
                 if(!this.database.isMysql()) {
                     this.database.execute("CREATE TABLE IF NOT EXISTS " + this.database.fixName("players") + " (" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "clan_id INTEGER," +
-                            "player_name VARCHAR (255)," +
-                            "UNIQUE (id)" +
-                            ");");
-                    this.database.execute("CREATE TABLE IF NOT EXISTS " + this.database.fixName("invite") + " (" +
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "clan_name VARCHAR (255)," +
                             "clan_id INTEGER," +
                             "player_name VARCHAR (255)," +
                             "UNIQUE (id)" +
@@ -770,20 +790,10 @@ public class CManager {
                             "  `clan_id` int(11) NOT NULL," +
                             "  `player_name` varchar(255) NOT NULL," +
                             ");");
-                    this.database.execute("CREATE TABLE IF NOT EXISTS " + this.database.fixName("invite") + " (" +
-                            "  `id` int(11) NOT NULL," +
-                            "  `clan_id` int(11) NOT NULL," +
-                            "  `clan_name` varchar(255) NOT NULL," +
-                            "  `player_name` varchar(255) NOT NULL," +
-                            ");");
                     this.database.execute("ALTER TABLE " + this.database.fixName("players") + " ADD PRIMARY KEY (`id`);");
                     this.database.execute("ALTER TABLE " + this.database.fixName("players") + " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;");
 
-                    this.database.execute("ALTER TABLE " + this.database.fixName("invite") + " ADD PRIMARY KEY (`id`);");
-                    this.database.execute("ALTER TABLE " + this.database.fixName("invite") + " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;");
-
                 }
-            }
         }
         this.database.disconnect();
     }

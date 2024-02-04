@@ -1,6 +1,5 @@
 package org.github.clansmanager.hook;
 
-import com.sun.imageio.plugins.tiff.TIFFExifJPEGCompressor;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,22 +12,15 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.github.clansmanager.CManager;
 import org.github.clansmanager.Loader;
-import org.github.clansmanager.utils.Clan;
-import org.github.clansmanager.utils.ClanChestManager;
-import org.github.clansmanager.utils.Messages;
 import org.github.clansmanager.utils.Utils;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class InvMenuOpen  implements Listener {
 
     private String name;
-    private CManager clans = null;
     private int size;
     private onClick click;
     List<String> viewing = new ArrayList<String>();
@@ -37,30 +29,16 @@ public class InvMenuOpen  implements Listener {
 
     private ItemStack[] items;
 
-    private ClanChestManager ches;
-    private File rewardsChest;
-
     public InvMenuOpen(String name, int size, onClick click) {
         this.name = name;
         this.size = size * 9;
         this.items = new ItemStack[this.size];
         this.click = click;
-        this.ches = new ClanChestManager();
-        this.clans = new CManager();
         Bukkit.getPluginManager().registerEvents(this, Loader.instance);
     }
 
     public InvMenuOpen(){
-        this.ches = new ClanChestManager();
-        this.clans = new CManager();
         Bukkit.getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugins()[0]);
-    }
-
-    public InvMenuOpen(File rewardsChest){
-        this.ches = new ClanChestManager();
-        this.rewardsChest = rewardsChest;
-        this.clans = new CManager();
-        Bukkit.getPluginManager().registerEvents(this, Loader.instance);
     }
 
     public InvMenuOpen setName(String name){
@@ -140,18 +118,6 @@ public class InvMenuOpen  implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         if (viewing.contains(event.getPlayer().getName()))
             viewing.remove(event.getPlayer().getName());
-
-        if(event != null && this.clans.isMemberOrOwner(((Player) event.getPlayer()))){
-            Clan clan = this.clans.getClanByOwnerPlayer(((Player) event.getPlayer()));
-            if(clan == null)
-                clan = this.clans.getClanByMemberPlayer(((Player) event.getPlayer()));
-
-            if(clan != null)
-                if(event.getInventory().getViewers().get(0).getOpenInventory().getTitle().contains(clan.getName())){
-                    ches.setDir(rewardsChest);
-                    ches.updateCheste(event.getInventory().getContents(), clan);
-                }
-        }
     }
 
 

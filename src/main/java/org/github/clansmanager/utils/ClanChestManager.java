@@ -20,11 +20,14 @@ public class ClanChestManager {
     private File dir;
 
     public ClanChestManager(){
-        this.dir = Loader.rewardsChest;
+        this.dir = Loader.instance.rewardsChest;
     }
     public int calculateSlots(CachedDataManager userInfo) {
         int slot = DEFAULT_MAX_SLOT;
         String[] permissions = {"1", "2", "3", "4", "5", "6"};
+
+        if(userInfo == null)
+            return DEFAULT_MAX_SLOT;
 
         if(userInfo.getPermissionData().checkPermission("clansmanager.slots." + permissions[0]).asBoolean()){
             slot = Integer.parseInt(permissions[0]) * 9;
@@ -76,10 +79,18 @@ public class ClanChestManager {
         File chestFile = new File(this.dir, clan.getId() + ".yml");
         if (!hasChest(clan)) {
             FileConfiguration chest = YamlConfiguration.loadConfiguration(chestFile);
-            return chest.getList("content") != null && chest.getList("content").size() >= maxSlot;
+            if (chest.getList("content") != null) {
+                if (chest.getList("content").isEmpty()) {
+                    return false;
+                }
+
+                if (chest.getList("content").size() >= maxSlot) {
+                    return true;
+                }
+            }
         }
 
-        return true;
+        return false;
     }
 
     public void createEmptyChest(Clan clan, int Slots) {

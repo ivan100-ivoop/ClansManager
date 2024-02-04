@@ -7,15 +7,63 @@ softdepend: [PlaceholderAPI, LuckPerms, Vault]
 
 commands:
   clan:
-    description: Master command for ClanManager
-    permission: clanmanager.usage
-    usage: "Usage: /clan"
+    permission-message: You do not have permission to use this command.
+    permission: clansmanager.clan
+    description: Clan master command!
 
 permissions:
-  clanmanager:
-    usage:
+  clansmanager:
+    reload:
       permission-message: You do not have permission to use this command.
       default: op
-    reload:
+    clan:
+      permission-message: You do not have permission to use this command.
+      default: op
+    set:
+      permission-message: You do not have permission to use this command.
+      default: op
+    bank:
+      permission-message: You do not have permission to use this command.
+      default: op
+    remove:
+      permission-message: You do not have permission to use this command.
+      default: op
+    teleport:
+      permission-message: You do not have permission to use this command.
+      default: op
+    lock:
+      permission-message: You do not have permission to use this command.
+      default: op
+    kickall:
+      permission-message: You do not have permission to use this command.
+      default: op
+    kick:
+      permission-message: You do not have permission to use this command.
+      default: op
+    create:
+      permission-message: You do not have permission to use this command.
+      default: op
+    list:
+      permission-message: You do not have permission to use this command.
+      default: op
+    leave:
+      permission-message: You do not have permission to use this command.
+      default: op
+    accept:
+      permission-message: You do not have permission to use this command.
+      default: op
+    chest:
+      permission-message: You do not have permission to use this command.
+      default: op
+    chat:
+      permission-message: You do not have permission to use this command.
+      default: op
+    battle:
+      permission-message: You do not have permission to use this command.
+      default: op
+    baccept:
+      permission-message: You do not have permission to use this command.
+      default: op
+    admin:
       permission-message: You do not have permission to use this command.
       default: op

@@ -50,7 +50,7 @@ public class Kick extends SubCommand {
         Clan clan = null;
 
         if (args.length < 1) {
-            sender.sendMessage(Messages.withPrefix("missing-clan-remove-player", "&cTo remove player your need to include him name!"));
+            sender.sendMessage(Messages.withPrefix("errors.clan-remove-player", "&cTo remove player your need to include him name!"));
             return true;
         }
 
@@ -60,40 +60,40 @@ public class Kick extends SubCommand {
             clan = this.clans.getClanByOwnerPlayer(player);
 
             if (clan == null) {
-                player.sendMessage(Messages.withPrefix("error-clan-not-found", "&cClan not found!"));
+                player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
                 return true;
             }
 
             if(!clan.isOwner(player)){
-                player.sendMessage(Messages.withPrefix("error-clan-not-owner", "&cYour are not this clan owner!"));
+                player.sendMessage(Messages.withPrefix("clan.not-owner", "&cYour are not this clan owner!"));
                 return true;
             }
 
             Player newMemberPlayer = Bukkit.getPlayer(args[0]);
 
             if (newMemberPlayer == null) {
-                player.sendMessage(Messages.withPrefix("player-offline", "&cThis player is offline!"));
+                player.sendMessage(Messages.withPrefix("errors.player-offline", "&cThis player is offline!"));
                 return true;
             }
 
             if (!clan.isMember(newMemberPlayer)) {
-                player.sendMessage(Messages.withPrefix("player-not-fount", "&cThis player is not clan member!"));
+                player.sendMessage(Messages.withPrefix("errors.player-not-fount", "&cThis player is not clan member!"));
                 return true;
             }
 
             clan = this.clans.kickClanMember(player, newMemberPlayer);
 
             if(clan == null){
-                player.sendMessage(Messages.withPrefix("clan-kick-unsuccess", "&eYour unsuccessful kick all player members!"));
+                player.sendMessage(Messages.withPrefix("error.kick-unsuccess-all", "&eYour unsuccessful kick all player members!"));
                 return true;
             }
 
-            player.sendMessage(Messages.withPrefix("clan-kick-success", "&eYour successful kick player %player% from clan %clan_name%!").replace("%player%", newMemberPlayer.getName()).replace("%clan_name%", clan.getName()));
-            newMemberPlayer.sendMessage(Messages.withPrefix("clan-kick-notify", "&eYour are kick from clan %clan_name%").replace("%clan_name%", clan.getName()));
+            player.sendMessage(Messages.withPrefix("success.kick-success", "&eYour successful kick player %player% from clan %clan_name%!").replace("%player%", newMemberPlayer.getName()).replace("%clan_name%", clan.getName()));
+            newMemberPlayer.sendMessage(Messages.withPrefix("success.kick-notify", "&eYour are kick from clan %clan_name%").replace("%clan_name%", clan.getName()));
             return true;
         }
 
-        sender.sendMessage(Messages.onlyMessage("player-only-command", "&cThis command can be run only from a player!", true));
+        sender.sendMessage(Messages.onlyMessage("errors.player-only-command", "&cThis command can be run only from a player!", true));
         return true;
     }
 

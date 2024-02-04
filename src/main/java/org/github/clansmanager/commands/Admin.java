@@ -1,11 +1,9 @@
 package org.github.clansmanager.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.github.clansmanager.Admin.AdminCommands;
 import org.github.clansmanager.CManager;
-import org.github.clansmanager.Loader;
 import org.github.clansmanager.game.Arena;
 import org.github.clansmanager.utils.Clan;
 import org.github.clansmanager.utils.Messages;
@@ -56,39 +54,48 @@ public class Admin extends SubCommand {
             Player player = (Player) sender;
 
             if (!player.hasPermission(this.getPermission()) && !player.isOp()) {
-                player.sendMessage(Messages.withPrefix("not-permission", "&4Your do not have permission to run this command!"));
+                player.sendMessage(Messages.withPrefix("errors.not-permission", "&4Your do not have permission to run this command!"));
                 return true;
             }
 
             if (args.length < 1) {
-                sender.sendMessage(Messages.withPrefix("missing-clan-option", "&cAdmin Option required!"));
+                sender.sendMessage(Messages.withPrefix("errors.admin-option", "&cAdmin Option required!"));
                 return false;
             }
         }
 
-        if(args[0].equalsIgnoreCase("spawn1")){
+        if(args[0].equalsIgnoreCase("setSpawn1")){
             if(sender instanceof Player) {
                 Player player = (Player) sender;
                 Arena.setSpawn1(player.getLocation());
-                player.sendMessage(Utils.fixColors("&aSpawn1 Saved!"));
+                player.sendMessage(Messages.withPrefix("success.battle-spawn-one", "&aSpawn1 Saved!"));
             }
             return true;
         }
 
-        if(args[0].equalsIgnoreCase("spawn2")){
+        if(args[0].equalsIgnoreCase("setSpawn2")){
             if(sender instanceof Player) {
                 Player player = (Player) sender;
                 Arena.setSpawn2(player.getLocation());
-                player.sendMessage(Utils.fixColors("&aSpawn2 Saved!"));
+                player.sendMessage(Messages.withPrefix("success.battle-spawn-two", "&aSpawn2 Saved!"));
             }
             return true;
         }
 
-        if(args[0].equalsIgnoreCase("inv")){
+        if(args[0].equalsIgnoreCase("setInv1")){
             if(sender instanceof Player) {
                 Player player = (Player) sender;
-                Arena.setInv(player.getInventory());
-                player.sendMessage(Utils.fixColors("&aInv Saved!"));
+                Arena.setInvOne(player.getInventory());
+                player.sendMessage(Messages.withPrefix("success.battle-inv-one", "&aInv1 Saved!"));
+            }
+            return true;
+        }
+
+        if(args[0].equalsIgnoreCase("setInv2")){
+            if(sender instanceof Player) {
+                Player player = (Player) sender;
+                Arena.setInvTwo(player.getInventory());
+                player.sendMessage(Messages.withPrefix("success.battle-inv-two", "&aInv2 Saved!"));
             }
             return true;
         }
@@ -98,29 +105,29 @@ public class Admin extends SubCommand {
                 if(sender instanceof Player){
                     return AdminCommands.openClanChest(args[1], ((Player) sender), this.clans);
                 }
-                sender.sendMessage(Messages.onlyMessage("player-only-command", "&cThis command can be run only from a player!", true));
+                sender.sendMessage(Messages.onlyMessage("errors.player-only-command", "&cThis command can be run only from a player!", true));
                 return true;
             case "balance":
                 if (args.length < 2) {
-                    sender.sendMessage(Messages.withPrefix("missing-clan-option", "&cAdmin Option required!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-option", "&cAdmin Option required!"));
                     return false;
                 }
                 return AdminCommands.clanBalance(args[1], Arrays.copyOfRange(args, 1, args.length), ((Player) sender), this.clans);
             case "setOwner":
                 if (args.length < 2) {
-                    sender.sendMessage(Messages.withPrefix("missing-clan-option", "&cAdmin Option required!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-option", "&cAdmin Option required!"));
                     return false;
                 }
                 return AdminCommands.setOwner(args[1], Arrays.copyOfRange(args, 1, args.length), ((Player) sender), this.clans);
             case "kick":
                 if (args.length < 2) {
-                    sender.sendMessage(Messages.withPrefix("missing-clan-option", "&cAdmin Option required!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-option", "&cAdmin Option required!"));
                     return false;
                 }
                 return AdminCommands.kickMember(args[1], Arrays.copyOfRange(args, 1, args.length), ((Player) sender), this.clans);
             case "remove":
                 if (args.length < 2) {
-                    sender.sendMessage(Messages.withPrefix("missing-clan-option", "&cAdmin Option required!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-option", "&cAdmin Option required!"));
                     return false;
                 }
                 return AdminCommands.removeClan(args[1], ((Player) sender), this.clans);
@@ -128,24 +135,24 @@ public class Admin extends SubCommand {
                 return AdminCommands.lockClan(args[1], ((Player) sender), this.clans);
             case "spychat":
                 if (args.length < 2) {
-                    sender.sendMessage(Messages.withPrefix("missing-clan-option", "&cAdmin Option required!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-option", "&cAdmin Option required!"));
                     return false;
                 }
 
                 if(args[1].equalsIgnoreCase("enable")){
                     if(AdminCommands.enableSpyClanChat(((Player) sender))){
-                        sender.sendMessage(Messages.withPrefix("admin-clan-spy-enabled", "&aSuccessful enabled clan spy chat!"));
+                        sender.sendMessage(Messages.withPrefix("success.admin-spy-enabled", "&aSuccessful enabled clan spy chat!"));
                         return true;
                     }
-                    sender.sendMessage(Messages.withPrefix("admin-clan-spy-error", "&cHmm error spy chat not executed!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-spy-chat", "&cHmm error spy chat not executed!"));
                     return true;
                 }
                 if(args[1].equalsIgnoreCase("disable")){
                     if(AdminCommands.disableSpyClanChat(((Player) sender))){
-                        sender.sendMessage(Messages.withPrefix("admin-clan-spy-disabled", "&aSuccessful disabled clan spy chat!"));
+                        sender.sendMessage(Messages.withPrefix("success.admin-spy-disabled", "&aSuccessful disabled clan spy chat!"));
                         return true;
                     }
-                    sender.sendMessage(Messages.withPrefix("admin-clan-spy-error", "&cHmm error spy chat not executed!"));
+                    sender.sendMessage(Messages.withPrefix("errors.admin-spy-chat", "&cHmm error spy chat not executed!"));
                     return true;
                 }
             default:
@@ -158,7 +165,7 @@ public class Admin extends SubCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
 
         if (args.length == 1 && sender.hasPermission(this.getPermission())) {
-            return Arrays.asList("inv", "spawn1", "spawn2", "lock", "spychat", "chest", "balance", "remove", "kick", "setOwner");
+            return Arrays.asList("setInv1", "setInv2", "setSpawn1", "setSpawn2", "lock", "spychat", "chest", "balance", "remove", "kick", "setOwner");
         }
 
         if (args.length == 2 && sender.hasPermission(this.getPermission())) {

@@ -18,6 +18,10 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
     private final Map<String, SubCommand> subCommands = new HashMap<>();
 
     public CommandsLoader() {
+        this.loadInternalCommands();
+    }
+
+    private void loadInternalCommands(){
         registerSubCommand(new Reload());
         registerSubCommand(new Create());
         registerSubCommand(new Remove());
@@ -34,7 +38,8 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
         registerSubCommand(new Bank());
         registerSubCommand(new Admin());
         registerSubCommand(new LockUlock());
-        registerSubCommand(new Test());
+        registerSubCommand(new Battle());
+        registerSubCommand(new battleAccept());
     }
 
     public void registerSubCommand(SubCommand subCommand) {
@@ -45,7 +50,7 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(!sender.hasPermission("clansmanager.clan") && !sender.isOp()){
-            sender.sendMessage(Messages.withPrefix("command-no-perms-message", "&4You do not have the necessary permissions to execute this command."));
+            sender.sendMessage(Messages.withPrefix("errors.no-permission", "&4You do not have the necessary permissions to execute this command."));
             return true;
         }
 
@@ -59,7 +64,7 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
 
-                        TextComponent main = new TextComponent(Messages.withPrefix("clan-usage", "Usage: %command%").replace("%command%", subCommand.getUsage()));
+                        TextComponent main = new TextComponent(Messages.withPrefix("errors.usage", "Usage: %command%").replace("%command%", subCommand.getUsage()));
                         main.setColor(ChatColor.YELLOW);
                         main.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(subCommand.getUsage()).create()));
                         main.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, subCommand.asUsageCommand()));
@@ -68,10 +73,10 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
                     }
                 }
             } else {
-                sender.sendMessage(Messages.withPrefix("command-no-perms-message", "&4You do not have the necessary permissions to execute this command."));
+                sender.sendMessage(Messages.withPrefix("errors.no-permission", "&4You do not have the necessary permissions to execute this command."));
             }
         } else {
-            sender.sendMessage(Messages.withPrefix("invalid-command-message", "&4Invalid command."));
+            sender.sendMessage(Messages.withPrefix("errors.invalid-command", "&4Invalid command."));
         }
 
         return true;
@@ -86,16 +91,25 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            for (String subCommand : subCommands.keySet()) {
-                if (subCommand.toLowerCase().startsWith(args[0].toLowerCase())) {
-                    completions.add(subCommand);
+            for( Map.Entry<String, SubCommand> command1 : subCommands.entrySet()){
+                if(command1.getValue().getPermission() != null && sender.hasPermission(command1.getValue().getPermission())){
+                    if (command1.getKey().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        completions.add(command1.getKey());
+                    }
                 }
             }
         } else if (args.length > 1 && subCommands.containsKey(args[0].toLowerCase())) {
             SubCommand subCommand = subCommands.get(args[0].toLowerCase());
-            completions.addAll(subCommand.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length)));
+            if (subCommand.getPermission() != null && sender.hasPermission(subCommand.getPermission())) {
+                completions.addAll(subCommand.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length)));
+            }
         }
 
         return completions;
+    }
+
+    public void reload() {
+        subCommands.clear();
+        this.loadInternalCommands();
     }
 }

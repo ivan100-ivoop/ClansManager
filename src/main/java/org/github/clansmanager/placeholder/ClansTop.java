@@ -1,6 +1,5 @@
 package org.github.clansmanager.placeholder;
 
-import jdk.javadoc.internal.doclets.formats.html.HelpWriter;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -95,6 +94,7 @@ public class ClansTop extends PlaceholderExpansion {
 
 
     public String fixInfo(Clan clan, String type){
+        this.clans.disconnect();
         ConfigurationSection config = Loader.instance.getConfig();
 
         if(type.equalsIgnoreCase("kill")){
