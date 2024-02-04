@@ -39,7 +39,6 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
         registerSubCommand(new Admin());
         registerSubCommand(new LockUlock());
         registerSubCommand(new Battle());
-        registerSubCommand(new battleAccept());
     }
 
     public void registerSubCommand(SubCommand subCommand) {

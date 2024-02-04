@@ -9,10 +9,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.github.clansmanager.CManager;
 import org.github.clansmanager.Loader;
+import org.github.clansmanager.game.ClanBattleGame;
 import org.github.clansmanager.utils.Clan;
 import org.github.clansmanager.utils.Messages;
 import org.github.clansmanager.utils.SubCommand;
+import org.github.clansmanager.utils.Utils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Battle extends SubCommand {
@@ -63,6 +66,14 @@ public class Battle extends SubCommand {
                 return false;
             }
 
+            if(args[0].equalsIgnoreCase("accept")){
+                return acceptBattle(player);
+            }
+
+            if(args[0].equalsIgnoreCase("deny")){
+                return denyBattle(player);
+            }
+
             clan = this.clans.getClanByOwnerPlayer(player);
 
             if(clan == null)
@@ -72,6 +83,7 @@ public class Battle extends SubCommand {
                 sender.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
                 return true;
             }
+
 
             List<Clan> _clans = this.clans.getAllClans();
             for (Clan c : _clans){
@@ -85,27 +97,37 @@ public class Battle extends SubCommand {
                 return true;
             }
 
-            if( clan.getName().equalsIgnoreCase(clan2.getName()) ){
+           if( clan.getName().equalsIgnoreCase(clan2.getName()) ){
                 sender.sendMessage(Messages.withPrefix("errors.clan-battle", "&cHmm is not allow to fight yourself!"));
                 return true;
             }
 
-            Player clanOwner = Bukkit.getPlayer(clan2.getOwner());
-
-            if (clanOwner == null) {
-                player.sendMessage(Messages.withPrefix("errors.owner-offline", "&cThis clan owner is offline!"));
+            if (!this.isHaveOnline(clan2)) {
+                player.sendMessage(Messages.withPrefix("errors.owner-offline", "&cThis clan member's is offline!"));
                 return true;
             }
 
-            if(Loader.instance.getConfig().getBoolean("battle-allow", false)){
+            if(!Loader.instance.getConfig().getBoolean("battle-allow", false)){
                 player.sendMessage(Messages.withPrefix("errors.battle-disabled", "&cClan battles are currently disabled."));
+                return true;
+            }
+
+            if(Loader.clan_battle.containsKey(clan2.getName()) || Utils.isInBattle(clan2)){
+                player.sendMessage(Messages.withPrefix("errors.currently-battle", "&cThis Clan currently are in battles."));
                 return true;
             }
 
             TextComponent main = new TextComponent(Messages.withPrefix("clan.battle-invite", "&bYou have been invited to the clan battle click here to accept").replace("%clan_name%", clan.getName()));
             main.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Messages.onlyMessage("clan.battle-accept", "&aAccept clan battle", false)).create()));
-            main.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/clan battleAccept %s %s", clan.getName(), clan2.getName()) ));
-            clanOwner.spigot().sendMessage(main);
+            main.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/clan %s accept", getName()) ));
+
+            if(!this.getOnlineMember(player, clan2, main)){
+                player.sendMessage(Messages.withPrefix("errors.owner-offline", "&cThis clan member's is offline!"));
+                return true;
+            }
+
+            Loader.clan_battle.put(clan2.getName(), clan);
+
             player.sendMessage(Messages.withPrefix("success.battle-invite", "&aYou send invite for clan battle."));
             return true;
         }
@@ -113,8 +135,140 @@ public class Battle extends SubCommand {
         return true;
     }
 
+    private boolean denyBattle(Player player) {
+        Clan clan = this.clans.getClanByOwnerPlayer(player);
+
+        if(clan == null)
+            clan = this.clans.getClanByMemberPlayer(player);
+
+        if(clan == null){
+            player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
+            return true;
+        }
+
+        if(Loader.clan_battle.containsKey(clan.getName())){
+            Clan oponent = Loader.clan_battle.get(clan.getName());
+
+            if (this.isHaveOnline(oponent)) {
+                if (!this.getOnlineMember(player, oponent, Messages.withPrefix("errors.deny-battle", "&cClan %clan_name% deny the clan battle request.").replace("%clan_name%", clan.getName()))) {
+                    player.sendMessage(Messages.withPrefix("errors.owner-offline", "&cThis clan member's is offline!"));
+                    return true;
+                }
+            }
+
+            player.sendMessage(Messages.withPrefix("success.deny-battle", "&eYou deny the clan battle request."));
+            Loader.clan_battle.remove(clan.getName());
+
+            return true;
+        }
+        player.sendMessage(Messages.withPrefix("errors.battle-not-found", "&cHmm battle request not found!"));
+        return true;
+    }
+
+    private boolean acceptBattle(Player player) {
+
+        System.out.println(Loader.clan_battle.entrySet().toArray());
+        Clan clan = this.clans.getClanByOwnerPlayer(player);
+
+        if(clan == null)
+            clan = this.clans.getClanByMemberPlayer(player);
+
+        if(clan == null){
+            player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
+            return true;
+        }
+
+        if(Loader.clan_battle.containsKey(clan.getName())){
+            Clan oponent =Loader.clan_battle.get(clan.getName());
+
+            if (!this.isHaveOnline(oponent)) {
+                player.sendMessage(Messages.withPrefix("errors.owner-offline", "&cThis clan member's is offline!"));
+                return true;
+            }
+
+            if(!this.getOnlineMember(player, oponent, Messages.withPrefix("clan.accept-battle", "&aClan %clan_name% accepted the battle request.").replace("%clan_name%", clan.getName()))){
+                player.sendMessage(Messages.withPrefix("errors.owner-offline", "&cThis clan member's is offline!"));
+                return true;
+            }
+
+            player.sendMessage(Messages.withPrefix("success.accept-battle", "&aYou accepted the clan battle request."));
+            ClanBattleGame game = new ClanBattleGame(clan, oponent);
+            game.startGame();
+            Loader.games.add(game);
+            Loader.clan_battle.remove(clan.getName());
+
+            return true;
+        }
+        player.sendMessage(Messages.withPrefix("errors.battle-not-found", "&cHmm battle request not found!"));
+        return true;
+    }
+
+    private boolean isHaveOnline(Clan clan){
+        Player clanMember = Bukkit.getPlayer(clan.getOwner());
+        if (clanMember == null) {
+            for (String member : clan.getMembers()){
+                clanMember = Bukkit.getPlayer(member);
+                if(clanMember != null)
+                    return true;
+            }
+        }
+
+        if(clanMember != null)
+            return true;
+
+        return false;
+    }
+
+
+    private boolean getOnlineMember(Player player, Clan clan, TextComponent message){
+        Player clanMember = Bukkit.getPlayer(clan.getOwner());
+        if (clanMember != null) {
+            clanMember.spigot().sendMessage(message);
+            return true;
+        }
+
+        for (String member : clan.getMembers()){
+            clanMember = Bukkit.getPlayer(member);
+            if(clanMember != null) {
+                clanMember.spigot().sendMessage(message);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean getOnlineMember(Player player, Clan clan, String message){
+        Player clanMember = Bukkit.getPlayer(clan.getOwner());
+        if (clanMember != null) {
+            clanMember.sendMessage(message);
+            return true;
+        }
+
+        for (String member : clan.getMembers()){
+            clanMember = Bukkit.getPlayer(member);
+            if(clanMember != null) {
+                clanMember.sendMessage(message);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
+        if(args.length == 1 && sender.hasPermission(this.getPermission())) {
+            Player player = (Player) sender;
+            Clan clan = this.clans.getClanByOwnerPlayer(player);
+
+            if(clan == null)
+                clan = this.clans.getClanByMemberPlayer(player);
+
+            if(clan != null && Loader.clan_battle.containsKey(clan.getName())){
+                return Arrays.asList("accept", "deny");
+            }
+        }
+
         return this.clans.getClansTab();
     }
 }

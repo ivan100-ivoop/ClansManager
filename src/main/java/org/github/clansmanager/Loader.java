@@ -18,8 +18,7 @@ import org.github.clansmanager.utils.DBManager;
 import org.github.clansmanager.utils.Utils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +31,7 @@ public final class Loader extends JavaPlugin {
     public static Loader instance;
     public static LuckPerms api = null;
     public static InvMenuOpen inv = null;
+    public static Map<String, Clan> clan_battle = new HashMap<>();
 
     private ClansManagerAPI clansManagerAPI;
     private AllClansManager allClansManager;
@@ -56,8 +56,11 @@ public final class Loader extends JavaPlugin {
 
     public boolean reloadPlugin() {
 
-        for ( ClanBattleGame game : games){
+        Iterator<ClanBattleGame> iterator = Loader.games.iterator();
+        while (iterator.hasNext()) {
+            ClanBattleGame game = iterator.next();
             game.forceEnd();
+            iterator.remove();
         }
 
         this.restoreInv();

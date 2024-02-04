@@ -40,18 +40,19 @@ public class Reload extends SubCommand {
             return true;
         }
 
-        if(!Loader.getPlugin(Loader.class).reloadPlugin()){
-            sender.sendMessage(Messages.withPrefix("error.reload", "&cNot successful reload!"));
+        if(Loader.getPlugin(Loader.class).reloadPlugin()){
+            if(sender instanceof Player){
+                sender.sendMessage(Messages.withPrefix("success.reload", "&aSuccessful reload!"));
+            } else {
+                sender.sendMessage(Messages.onlyMessage("success.reload", "&aSuccessful reload!", true));
+            }
         } else {
-            sender.sendMessage(Messages.onlyMessage("error.reload", "&cNot successful reload!", true));
+            if(sender instanceof Player){
+                sender.sendMessage(Messages.withPrefix("error.reload", "&cNot successful reload!"));
+            } else {
+                sender.sendMessage(Messages.onlyMessage("error.reload", "&cNot successful reload!", true));
+            }
         }
-
-        if(sender instanceof Player){
-            sender.sendMessage(Messages.withPrefix("success.reload", "&aSuccessful reload!"));
-        } else {
-            sender.sendMessage(Messages.onlyMessage("success.reload", "&aSuccessful reload!", true));
-        }
-
         return true;
     }
 

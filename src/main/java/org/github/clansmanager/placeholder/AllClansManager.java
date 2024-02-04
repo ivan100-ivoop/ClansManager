@@ -88,7 +88,23 @@ public class AllClansManager extends PlaceholderExpansion {
             }
 
             if (params.contains("prefix")) {
+                return createPrefix(clan.getPrefix());
+            }
+
+            if (params.contains("prefix_clear")) {
                 return clan.getPrefix();
+            }
+
+            if (params.contains("kills")) {
+                return String.valueOf(clan.getKills());
+            }
+
+            if (params.contains("balance")) {
+                return Loader.eco.format(clan.getBalance());
+            }
+
+            if (params.contains("death")) {
+                return String.valueOf(clan.getDeath());
             }
 
             if (params.contains("members")) {
@@ -105,5 +121,10 @@ public class AllClansManager extends PlaceholderExpansion {
             }
 
         return "";
+    }
+
+    private String createPrefix(String prefix) {
+        String present = Loader.getPlugin(Loader.class).getConfig().getString("clan-prefix-present", "%prefix%");
+        return present.replace("%prefix%", prefix);
     }
 }

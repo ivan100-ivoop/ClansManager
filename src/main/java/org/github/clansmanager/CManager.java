@@ -841,4 +841,41 @@ public class CManager {
         this.database.execute(sql, clan.isLock(), clan.getId());
         this.database.disconnect();
     }
+
+    public void updateRank(Clan clan) {
+        String sql = "UPDATE " + this.database.fixName("clans") + " SET clan_rank=? WHERE id=?";
+        if(!this.database.isConnected())
+            this.database.connect();
+        this.database.execute(sql, clan.getRank(), clan.getId());
+        this.database.disconnect();
+    }
+
+    public List<Clan> topRank() {
+        List<Clan> clan = new ArrayList<>();
+
+        if(!this.database.isConnected())
+            this.database.connect();
+
+        List<Object[]> rows = this.database.executeQuery("SELECT * FROM " + this.database.fixName("clans") + " ORDER BY clan_rank DESC");
+        if(rows != null && rows.size() >= 0){
+            for(Object[] row : rows){
+                Location loc = getLocationFromRow(row);
+                clan.add(new Clan()
+                        .setId(((int) row[0]))
+                        .setManager(this)
+                        .setName(String.valueOf(row[1]))
+                        .setBalance(((double) row[4]))
+                        .setOwner(String.valueOf(row[2]))
+                        .setPrefix(String.valueOf(row[3] == null ? "": row[3]))
+                        .setLocation(loc)
+                        .setMembers(getPlayers(((int) row[0])))
+                        .setKills(((int) (row[13] == null ? 0 : row[13])))
+                        .setDeath(((int) (row[12] == null ? 0 : row[12])))
+                        .setLock(((boolean) (row[14] == null ? false : (((int) row[14]) == 1 ? true : false))))
+                );
+            }
+        }
+        this.database.disconnect();
+        return clan;
+    }
 }

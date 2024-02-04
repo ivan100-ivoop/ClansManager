@@ -127,7 +127,7 @@ public class ClanList extends SubCommand {
         List<String> lores = this.shem.getStringList("lore");
         List<String> output = new ArrayList<>();
 
-        String[] placeholders = {"%clans_prefix%", "%clans_name%", "%clans_owner%", "%clans_members%", "%clans_members_count%"};
+        String[] placeholders = {"%clans_prefix%", "%clans_name%", "%clans_owner%", "%clans_members%", "%clans_members_count%", "%clans_kills%", "%clans_death%", "%clans_balance%"};
 
         for (String lore : lores) {
             for (String placeholder : placeholders) {

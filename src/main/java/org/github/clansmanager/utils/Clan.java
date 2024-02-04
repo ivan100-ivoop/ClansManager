@@ -190,4 +190,9 @@ public class Clan {
         setBalance(amount);
         return this.manager.updateBalance(this);
     }
+
+    public void rankUP() {
+        this.rank++;
+        this.manager.updateRank(this);
+    }
 }

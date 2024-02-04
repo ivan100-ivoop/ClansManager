@@ -10,10 +10,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.github.clansmanager.Loader;
+import org.github.clansmanager.game.ClanBattleGame;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -145,4 +147,17 @@ public class Utils {
         return false;
     }
 
+    public static boolean isInBattle(Clan clan){
+        Optional<ClanBattleGame> clanBattle = Loader.games.stream().filter(clanBattleGame -> clanBattleGame.containsClan(clan)).findFirst();
+
+        if(!clanBattle.isPresent()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void executeCommand(String command) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+    }
 }

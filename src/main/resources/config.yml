@@ -16,6 +16,7 @@ clan-chat-member-color: "&a&l"
 clan-chat-present: "&8「%clan_prefix_clear%&8」&r%player_name%&f: &b&l%message%"
 
 ## present in top's
+clan-top-battle-preset: "{clan} &6&l{amount} &aBattle's"
 clan-top-kills-preset: "{clan} &6&l{amount} &aKills"
 clan-top-death-preset: "{clan} &6&l{amount} &cDeaths"
 clan-top-balance-preset: "{clan} &6&l{amount}"
@@ -42,7 +43,16 @@ db:
   pass: ""
 
 ## battle settings
+
+## example
+# reward-commands: "say Clan %clan_name% win!"
+
+## palceholders
+# %clan_name% %clan_prefix% %clan_owner% %player%
+
 battle-allow: true
 match-time: 1
 timer-starting: 3
 start-timer: 5
+reward-commands:
+  - "say %clan_name% Win!"

@@ -34,4 +34,7 @@ public class Messages {
         }
         return Utils.fixColors(getMessages(Loader.instance).getString(path, def));
     }
+    public static String onlyMessage(String path, String def) {
+        return Utils.fixColors(getMessages(Loader.instance).getString(path, def));
+    }
 }

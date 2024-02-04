@@ -56,7 +56,22 @@ public class ClansTop extends PlaceholderExpansion {
             return topBalance(params);
         }
 
+        if(params.contains("battle")){
+            return topBattle(params);
+        }
+
         return "";
+    }
+
+    private String topBattle(String params) {
+        List<Clan> _clans = this.clans.topRank();
+        int id = this.getID(params);
+
+        if (id < 0 || id >= _clans.size()) {
+            return "";
+        }
+
+        return fixInfo(_clans.get(id), "rank");
     }
 
     private String topKills(String params) {
@@ -101,6 +116,13 @@ public class ClansTop extends PlaceholderExpansion {
             return Utils.fixColors(config.getString("clan-top-kills-preset","{clan} &6&l{amount} &aKills")
                     .replace("{clan}", clan.getName())
                     .replace("{amount}", String.valueOf(clan.getKills()))
+            );
+        }
+
+        if(type.equalsIgnoreCase("rank")){
+            return Utils.fixColors(config.getString("clan-top-battle-preset","{clan} &6&l{amount} &aBattle's")
+                    .replace("{clan}", clan.getName())
+                    .replace("{amount}", String.valueOf(clan.getRank()))
             );
         }
 

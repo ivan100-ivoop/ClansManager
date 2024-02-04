@@ -17,7 +17,7 @@ errors:
   bank-deposit-error: "&cDeposit failed. Insufficient funds."
   bank-error: "&cAn error occured: %error%"
   clan-battle: "&cHmm is not allow to fight yourself!"
-  owner-offline: "&cThis clan owner is offline!"
+  owner-offline: "&cThis clan member's is offline!"
   reload: "&cNot successful reload!"
   clan-name: "&cClan name is required!"
   clan-not-found: "&cClan not found!"
@@ -52,6 +52,9 @@ errors:
   admin-spy-chat: "&cHmm error spy chat not executed!"
   battle-command: "&cYou cannot use commands during a clan battle!"
   battle-disabled: "&cClan battles are currently disabled."
+  battle-not-found: "&cHmm battle request not found!"
+  deny-battle: "&aClan %clan_name% deny the clan battle request."
+  currently-battle: "&cThis Clan currently are in battles."
 
 success:
   bank-deposit: "&eYou deposit &a&l%amount%$&e and now clan have &a&l%balance%&e!"
@@ -84,6 +87,7 @@ success:
   admin-spy-enabled: "&aSuccessful enabled clan spy chat!"
   admin-spy-disabled: "&aSuccessful disabled clan spy chat!"
   invite: "&bYou have been invited %player_name% to clan %clan_name%!"
+  deny-battle: "&aYou deny the clan battle request."
 
 clan:
   locked: "&aSuccessful Unlocked!"
@@ -97,11 +101,12 @@ clan:
   battle-remove: "&cYou are removed from the battle!"
   invite: "&bYou have been invited to the clan %clan_name% click to accept it"
   accept: "&aAccept clan invite"
+  accept-battle: "&aClan %clan_name% accepted the battle request."
 
 battle:
   force-end-battle: "&cAdmin has forced an end to all clan battles!"
   win: "&aClan %s wins the battle!"
-  raw: "&cRAW"
+  raw: "&cDRAW"
   eliminated:
     leave: "&c%s has been eliminated from Clan %s during a leave!"
     battle: "&c%s has been eliminated from Clan %s during the battle!"

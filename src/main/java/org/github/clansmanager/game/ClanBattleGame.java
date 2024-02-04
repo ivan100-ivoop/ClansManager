@@ -29,6 +29,7 @@ public class ClanBattleGame {
     private boolean isRunning = false;
     public boolean isDisableMove = false;
     public boolean isAllowPvP = false;
+    private boolean isCommand = false;
 
     public ClanBattleGame(Clan clan1, Clan clan2) {
         this.clan1 = clan1;
@@ -69,7 +70,7 @@ public class ClanBattleGame {
                         cancel();
                         startProgress();
                     } else {
-                        broadcastTimer(seconds, Messages.onlyMessage("battle.timer.staring", "&eStarting at: %s", false));
+                        broadcastTimer(seconds, Messages.onlyMessage("battle.timer.staring", "&eStarting at: %s"));
                         seconds--;
                     }
                 }
@@ -101,11 +102,11 @@ public class ClanBattleGame {
                         startBattle();
                     } else {
                         if(seconds == 0){
-                            broadcastTitle(Messages.onlyMessage("battle.timer.go", "&bGO", true));
+                            broadcastTitle(Messages.onlyMessage("battle.timer.go", "&bGO"));
                             isDisableMove = false;
                             seconds--;
                         } else {
-                            broadcastTitle(Messages.onlyMessage("battle.timer.countdown", "&b%time%", true)
+                            broadcastTitle(Messages.onlyMessage("battle.timer.countdown", "&b%time%")
                                     .replace("%time%", String.valueOf(seconds))
                             );
                             isDisableMove = true;
@@ -130,7 +131,7 @@ public class ClanBattleGame {
                     cancel();
                     endGame();
                 } else {
-                    broadcastTimer(seconds, Messages.onlyMessage("battle.timer.end", "&eEnd after: %s", false));
+                    broadcastTimer(seconds, Messages.onlyMessage("battle.timer.end", "&eEnd after: %s"));
                     isAllowPvP = true;
                     gameLogic();
                     seconds--;
@@ -150,7 +151,6 @@ public class ClanBattleGame {
         teleportPlayers(clan2Players, clan2Location);
         restoreInv(clan1Players);
         restoreInv(clan2Players);
-        Loader.games.remove(Loader.games.indexOf(this));
     }
 
     private void endGame() {
@@ -178,11 +178,11 @@ public class ClanBattleGame {
         }
 
         if(clan1left > clan2left){
-            win(clan1Players, clan1);
+            win(clan1);
         } else if(clan2left > clan1left){
-            win(clan2Players, clan2);
+            win(clan2);
         } else if(clan2left == clan1left){
-            broadcastTitle(Messages.onlyMessage("battle-raw", "&cRAW", false));
+            broadcastTitle(Messages.onlyMessage("battle-raw", "&cDRAW"));
         }
 
     }
@@ -198,39 +198,72 @@ public class ClanBattleGame {
         }
     }
 
-    private void win(List<Player> clan1Players, Clan winningClan) {
+    private void win(Clan winningClan) {
         String winMessage = String.format(Messages.withPrefix("battle-win", "&aClan %s wins the battle!"), winningClan.getName());
+        notifyAll(winMessage);
+        isCommand = Loader.instance.getConfig().isString("reward-commands");
+        if(isCommand){
+            for (Player winners : this.getClanPlayers(winningClan)){
+                if(winners != null){
+                    String command = Loader.instance.getConfig().getString("reward-commands", "");
+                    if(!command.isEmpty()){
+                        Utils.executeCommand(command
+                                .replace("%clan_name%", winningClan.getName())
+                                .replace("%clan_prefix%", winningClan.getPrefix())
+                                .replace("%clan_owner%", winningClan.getOwner())
+                                .replace("%player%", winners.getName())
+                        );
+                    }
+                }
+            }
+        } else {
+            for (Player winners : this.getClanPlayers(winningClan)){
+                if(winners != null){
+                    List<String> commands = Loader.instance.getConfig().getStringList("reward-commands");
+                    for (String command : commands){
+                        if(!command.isEmpty()){
+                            Utils.executeCommand(command
+                                    .replace("%clan_name%", winningClan.getName())
+                                    .replace("%clan_prefix%", winningClan.getPrefix())
+                                    .replace("%clan_owner%", winningClan.getOwner())
+                                    .replace("%player%", winners.getName())
+                            );
+                        }
+                    }
+                }
+            }
+        }
+        winningClan.rankUP();
 
-        broadcastMessage(winMessage);
     }
 
     private void broadcastMessage(String message) {
         for (Player player : clan1Players) {
-            player.sendMessage(Utils.fixColors(message));
+            player.sendMessage(message);
         }
 
         for (Player player : clan2Players) {
-            player.sendMessage(Utils.fixColors(message));
+            player.sendMessage(message);
         }
     }
     private void broadcastTimer(int time, String message) {
         for (Player player : clan1Players) {
             String _msg = String.format(message, Utils.formatTimer(time));
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Utils.fixColors(_msg)));
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(_msg));
         }
         for (Player player : clan2Players) {
             String _msg = String.format(message, Utils.formatTimer(time));
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Utils.fixColors(_msg)));
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(_msg));
         }
 
     }
 
     private void broadcastTitle(String time) {
         for (Player player : clan1Players) {
-            player.sendTitle(Utils.fixColors(String.format("%s", time)), "");
+            player.sendTitle(String.format("%s", time), "");
         }
         for (Player player : clan2Players) {
-            player.sendTitle(Utils.fixColors(String.format("%s", time)), "");
+            player.sendTitle(String.format("%s", time), "");
         }
     }
 
@@ -309,7 +342,27 @@ public class ClanBattleGame {
         handleElimination(player, Messages.withPrefix("battle.eliminated.leave", "&c%s has been eliminated from Clan %s during a leave!"));
     }
 
+    private void notifyAll(String msg){
+        for(Player p : this.getClanPlayers(clan1)){
+            if(p != null)
+                p.sendMessage(msg);
+        }
+        for(Player p : this.getClanPlayers(clan1)){
+            if(p != null)
+                p.sendMessage(msg);
+
+        }
+    }
+
     public void playerDead(Player victim) {
         handleElimination(victim, Messages.withPrefix("battle.eliminated.battle", "&c%s has been eliminated from Clan %s during the battle!"));
+    }
+
+    public boolean containsClan(Clan clan) {
+        if(clan1.getName().equalsIgnoreCase(clan.getName()))
+            return true;
+        if(clan2.getName().equalsIgnoreCase(clan.getName()))
+            return true;
+        return false;
     }
 }
