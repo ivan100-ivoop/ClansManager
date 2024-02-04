@@ -88,11 +88,17 @@ public class AllClansManager extends PlaceholderExpansion {
             }
 
             if (params.contains("prefix")) {
-                return createPrefix(clan.getPrefix());
+                if(!clan.getPrefix().isEmpty()) {
+                    return createPrefix(clan.getPrefix());
+                }
+                return "";
             }
 
             if (params.contains("prefix_clear")) {
-                return clan.getPrefix();
+                if(!clan.getPrefix().isEmpty()) {
+                    return clan.getPrefix();
+                }
+                return "";
             }
 
             if (params.contains("kills")) {
