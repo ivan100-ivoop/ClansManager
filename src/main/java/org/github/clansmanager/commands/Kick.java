@@ -32,7 +32,7 @@ public class Kick extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Kick Member from your clan!";
+        return "Kick member from your clan!";
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Kick extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <ClanMember>";
+        return "/clan " + getName() + " <member>";
     }
 
     @Override

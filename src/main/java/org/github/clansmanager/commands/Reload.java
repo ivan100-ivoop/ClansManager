@@ -30,7 +30,7 @@ public class Reload extends SubCommand {
         return "/clan " + this.getName();
     }
     @Override
-    public String asUsageCommand() { return "/clan " + getName() + " ";}
+    public String asUsageCommand() { return "/clan " + getName();}
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {

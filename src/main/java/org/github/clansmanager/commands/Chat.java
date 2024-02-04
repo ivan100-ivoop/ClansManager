@@ -44,7 +44,7 @@ public class Chat extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <Message>";
+        return "/clan " + getName() + " <message>";
     }
 
     @Override

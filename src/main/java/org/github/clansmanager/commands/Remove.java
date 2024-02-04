@@ -41,7 +41,7 @@ public class Remove extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <ClanName>";
+        return "/clan " + getName();
     }
 
     @Override

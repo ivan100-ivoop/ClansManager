@@ -46,7 +46,7 @@ public class Bank extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <deposit, balance, withdraw> <amount>";
+        return "/clan " + getName() + " <deposit, balance, withdraw> <amount> ";
     }
 
     @Override

@@ -39,6 +39,7 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
         registerSubCommand(new Admin());
         registerSubCommand(new LockUlock());
         registerSubCommand(new Battle());
+        registerSubCommand(new Help());
     }
 
     public void registerSubCommand(SubCommand subCommand) {
@@ -66,7 +67,7 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
                         TextComponent main = new TextComponent(Messages.withPrefix("errors.usage", "Usage: %command%").replace("%command%", subCommand.getUsage()));
                         main.setColor(ChatColor.YELLOW);
                         main.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(subCommand.getUsage()).create()));
-                        main.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, subCommand.asUsageCommand()));
+                        main.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/clan help"));
 
                         player.spigot().sendMessage(main);
                     }
@@ -110,5 +111,9 @@ public class CommandsLoader implements CommandExecutor, TabCompleter {
     public void reload() {
         subCommands.clear();
         this.loadInternalCommands();
+    }
+
+    public Set<Map.Entry<String, SubCommand>> getCommands() {
+        return this.subCommands.entrySet();
     }
 }

@@ -43,7 +43,7 @@ public class SetOptions extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + this.getName() + " <Options>";
+        return "/clan " + this.getName() + " <tp, prefix, owner>";
     }
 
     @Override

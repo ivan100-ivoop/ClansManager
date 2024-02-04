@@ -30,7 +30,7 @@ public class KickAll extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "KickAll Member's from your clan!";
+        return "KickAll members from your clan!";
     }
 
     @Override
@@ -40,7 +40,7 @@ public class KickAll extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <ClanMember>";
+        return "/clan " + getName();
     }
 
     @Override

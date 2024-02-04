@@ -116,3 +116,7 @@ battle:
     go: "&bGO"
     countdown: "&b%time%"
 
+help:
+  title: "Available commands:"
+  present: "/clan %command% %usage% - %description%"
+

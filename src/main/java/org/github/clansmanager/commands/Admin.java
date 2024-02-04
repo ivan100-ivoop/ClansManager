@@ -45,7 +45,7 @@ public class Admin extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <chest> <clan>";
+        return "/clan " + getName() + " <setInv1, setInv2, setSpawn1, setSpawn2, lock, spychat, chest, balance, remove, kick, setOwner> <clan> <value>";
     }
 
     @Override

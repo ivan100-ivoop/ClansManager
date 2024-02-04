@@ -46,7 +46,7 @@ public class Battle extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <clanName>";
+        return "/clan " + getName() + " <ClanName>";
     }
 
     @Override

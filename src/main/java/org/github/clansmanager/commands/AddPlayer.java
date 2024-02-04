@@ -49,7 +49,7 @@ public class AddPlayer extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan " + getName() + " <ClanName> <Player>";
+        return "/clan " + getName() + " <ClanName> <player>";
     }
 
     @Override
