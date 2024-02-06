@@ -109,7 +109,6 @@ public class ClansTop extends PlaceholderExpansion {
 
 
     public String fixInfo(Clan clan, String type){
-        this.clans.disconnect();
         ConfigurationSection config = Loader.instance.getConfig();
 
         if(type.equalsIgnoreCase("kill")){
@@ -133,10 +132,13 @@ public class ClansTop extends PlaceholderExpansion {
             );
         }
 
-        return Utils.fixColors(config.getString("clan-top-balance-preset","{clan} &6&l{amount}")
-                .replace("{clan}", clan.getName())
-                .replace("{amount}", Loader.eco.format(clan.getBalance()))
-        );
+        if(type.equalsIgnoreCase("balance")){
+            return Utils.fixColors(config.getString("clan-top-balance-preset","{clan} &6&l{amount}")
+                    .replace("{clan}", clan.getName())
+                    .replace("{amount}", Loader.eco.format(clan.getBalance()))
+            );
+        }
+        return " ";
     }
 
     private int getID(String params) {

@@ -27,7 +27,6 @@ public class AdminCommands {
                         newMemberPlayer.sendMessage(chat);
             }
         }
-        database.disconnect();
     }
 
     public static boolean enableSpyClanChat(Player player){
@@ -67,7 +66,6 @@ public class AdminCommands {
                 database.execute("ALTER TABLE " + database.fixName("staff") + " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;");
             }
         }
-        database.disconnect();
     }
 
     public static boolean openClanChest(String clanName, Player player, CManager manager) {
@@ -76,7 +74,6 @@ public class AdminCommands {
 
         if (clan == null) {
             player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
-            manager.disconnect();
             return true;
         }
 
@@ -85,7 +82,6 @@ public class AdminCommands {
         }
 
         clanChest.openChest(clan, player);
-        manager.disconnect();
         return true;
     }
 
@@ -94,7 +90,6 @@ public class AdminCommands {
 
         if (clan == null) {
             player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
-            manager.disconnect();
             return true;
         }
 
@@ -102,7 +97,6 @@ public class AdminCommands {
             player.sendMessage(Messages.withPrefix("success.clan-admin-bank-successful", "&eClan &c&l%clan%&e Balance: &a&l%balance%&e!")
                     .replace("%balance%", Loader.eco.format(clan.getBalance()))
                     .replace("%clan%", clan.getName()));
-            manager.disconnect();
             return true;
         }
 
@@ -116,7 +110,6 @@ public class AdminCommands {
             case "give":
                 return giveClanBalance(clan, Arrays.copyOfRange(args, 2, args.length), player, manager);
             default:
-                manager.disconnect();
                 return false;
         }
     }
@@ -126,18 +119,15 @@ public class AdminCommands {
             double amount = Double.parseDouble(Utils.getText(args));
             if(!clan.deposit(amount)){
                 player.sendMessage(Messages.withPrefix("errors.clan-bank-admin-error-give", "&cUnable to give Money!"));
-                manager.disconnect();
                 return true;
             }
 
             player.sendMessage(Messages.withPrefix("success.clan-bank-successful-deposit", "&eYou deposit &a&l%amount%$&e and now clan have &a&l%balance%&e!")
                     .replace("%balance%", Loader.eco.format(clan.getBalance()))
                     .replace("%amount%", Loader.eco.format(amount)));
-            manager.disconnect();
             return true;
         } catch (NumberFormatException e) {
             player.sendMessage(Messages.withPrefix("errors.clan-bank-invalid", "&cInvaild amount!"));
-            manager.disconnect();
             return true;
         }
     }
@@ -147,32 +137,27 @@ public class AdminCommands {
             double amount = Double.parseDouble(Utils.getText(args));
             if(!clan.adminSetBalance(amount)){
                 player.sendMessage(Messages.withPrefix("errors.clan-bank-admin-error", "&cUnable to set Clan Balance!"));
-                manager.disconnect();
                 return true;
             }
 
             player.sendMessage(Messages.withPrefix("success.clan-bank-admin-set", "&eYou set clan %clan% balance to &a&l%balance%&e!")
                     .replace("%balance%", Loader.eco.format(clan.getBalance()))
                     .replace("%clan%", clan.getName()));
-            manager.disconnect();
             return true;
         } catch (NumberFormatException e) {
             player.sendMessage(Messages.withPrefix("errors.clan-bank-invalid", "&cInvaild amount!"));
-            manager.disconnect();
             return true;
         }
     }
     private static boolean setClanBalance(Clan clan, double amount, Player player, CManager manager) {
         if(!clan.adminSetBalance(amount)){
             player.sendMessage(Messages.withPrefix("errors.clan-bank-admin-error", "&cUnable to set Clan Balance!"));
-            manager.disconnect();
             return true;
         }
 
         player.sendMessage(Messages.withPrefix("success.clan-bank-admin-set", "&eYou set clan %clan% balance to &a&l%balance%&e!")
                 .replace("%balance%", Loader.eco.format(clan.getBalance()))
                 .replace("%clan%", clan.getName()));
-        manager.disconnect();
         return true;
     }
 
@@ -182,7 +167,6 @@ public class AdminCommands {
             return withdrawClan(clan, amount, player, manager);
         } catch (NumberFormatException e) {
             player.sendMessage(Messages.withPrefix("errors.clan-bank-invalid", "&cInvaild amount!"));
-            manager.disconnect();
             return true;
         }
 
@@ -191,13 +175,11 @@ public class AdminCommands {
     private static boolean withdrawClan(Clan clan, double amount, Player player, CManager manager) {
         if (amount > clan.getBalance()) {
             player.sendMessage(Messages.withPrefix("errors.clan-bank-no-amount-withdraw", "&cYour clan not have %amount%").replace("%amount%", Loader.eco.format(amount)));
-            manager.disconnect();
             return true;
         }
 
         if(!clan.withdraw(amount)){
             player.sendMessage(Messages.withPrefix("errors.clan-bank-withdraw-error", "&cWithdrawal failed. Insufficient funds."));
-            manager.disconnect();
             return true;
         }
 
@@ -206,14 +188,12 @@ public class AdminCommands {
         if(!r.transactionSuccess()) {
             player.sendMessage(Messages.withPrefix("errors.clan-bank-error", "&cAn error occured: %error%").replace("%error%", r.errorMessage));
             clan.deposit(amount);
-            manager.disconnect();
             return true;
         }
 
         player.sendMessage(Messages.withPrefix("success.clan-bank-successful-withdraw", "&eYou withdraw &a&l%amount%$&e and now clan have &a&l%balance%&e!")
                 .replace("%balance%", Loader.eco.format(clan.getBalance()))
                 .replace("%amount%", Loader.eco.format(amount)));
-        manager.disconnect();
         return true;
 
     }
@@ -223,7 +203,6 @@ public class AdminCommands {
 
         if (clan == null) {
             player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
-            manager.disconnect();
             return true;
         }
 
@@ -231,25 +210,21 @@ public class AdminCommands {
 
         if (newOwnerPlayer == null){
             player.sendMessage(Messages.withPrefix("errors.player-offline", "&cThis player is offline!"));
-            manager.disconnect();
             return true;
         }
 
         if (clan.isOwner(newOwnerPlayer)) {
             player.sendMessage(Messages.withPrefix("errors.clan-owner", "&cYou are unable to give the clan to yourself!"));
-            manager.disconnect();
             return true;
         }
 
         if(!manager.updateClanOwner(player, newOwnerPlayer)){
             player.sendMessage(Messages.withPrefix("errors.clan-owner-error", "&cUnsuccessful set new clan owner!"));
-            manager.disconnect();
             return true;
         }
 
         newOwnerPlayer.sendMessage(Messages.withPrefix("success.clan-new-owner", "&eYou have been given ownership of the clan %clan_name% from %old_owner%").replace("%clan_name%", clan.getName()).replace("%old_owner%", clan.getOwner()));
         player.sendMessage(Messages.withPrefix("success.clan-owner-updated", "&aSuccessfully set new clan owner!"));
-        manager.disconnect();
         return true;
     }
     public static boolean kickMember(String clanName, String[] args, Player player, CManager manager) {
@@ -257,7 +232,6 @@ public class AdminCommands {
 
         if (clan == null) {
             player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
-            manager.disconnect();
             return true;
         }
 
@@ -265,13 +239,11 @@ public class AdminCommands {
 
         if (newMemberPlayer == null) {
             player.sendMessage(Messages.withPrefix("errors.player-offline", "&cThis player is offline!"));
-            manager.disconnect();
             return true;
         }
 
         if (!clan.isMember(newMemberPlayer)) {
             player.sendMessage(Messages.withPrefix("errors.player-not-fount", "&cThis player is not clan member!"));
-            manager.disconnect();
             return true;
         }
 
@@ -279,13 +251,11 @@ public class AdminCommands {
 
         if(clan == null){
             player.sendMessage(Messages.withPrefix("errors.clan-kick-unsuccess", "&eYour unsuccessful kick all player members!"));
-            manager.disconnect();
             return true;
         }
 
         player.sendMessage(Messages.withPrefix("success.clan-kick-success", "&eYour successful kick player %player% from clan %clan_name%!").replace("%player%", newMemberPlayer.getName()).replace("%clan_name%", clan.getName()));
         newMemberPlayer.sendMessage(Messages.withPrefix("clan.kick-notify", "&eYour are kick from clan %clan_name%").replace("%clan_name%", clan.getName()));
-        manager.disconnect();
         return true;
 
     }
@@ -296,7 +266,6 @@ public class AdminCommands {
 
         if (clan == null) {
             player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
-            manager.disconnect();
             return true;
         }
 
@@ -304,12 +273,10 @@ public class AdminCommands {
 
         if(!clanChest.removeChest(clan) && clan == null){
             player.sendMessage(Messages.withPrefix("errors.clan-remove", "&cClan is not removed!"));
-            manager.disconnect();
             return true;
         }
 
         player.sendMessage(Messages.withPrefix("success.clan-remove", "&aClan Successful removed!"));
-        manager.disconnect();
         return true;
     }
 
@@ -318,7 +285,6 @@ public class AdminCommands {
 
         if (clan == null) {
             player.sendMessage(Messages.withPrefix("errors.clan-not-found", "&cClan not found!"));
-            manager.disconnect();
             return true;
         }
 

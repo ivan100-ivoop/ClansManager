@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.github.clansmanager.CManager;
 import org.github.clansmanager.utils.Messages;
 import org.github.clansmanager.utils.SubCommand;
+import org.github.clansmanager.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,8 +62,12 @@ public class Create extends SubCommand {
                 return true;
             }
 
+            if(!Utils.isValidClanName(args[0])){
+                sender.sendMessage(Messages.withPrefix("errors.invalid-clan-name", "&cThis clanName is not valid!"));
+                return true;
+            }
+
             if(!this.clans.createClan(args[0], player)){
-                this.clans.disconnect();
                 player.sendMessage(Messages.withPrefix("errors.clan-save", "&cClan not is saved!"));
                 return true;
             }

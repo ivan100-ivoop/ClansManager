@@ -65,7 +65,6 @@ public class AllClansManager extends PlaceholderExpansion {
 
 
     private String decodeClans(String params, List<Clan> clans) {
-        this.clans.disconnect();
 
         if(clans == null)
             return "";

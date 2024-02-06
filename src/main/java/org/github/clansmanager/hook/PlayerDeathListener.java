@@ -37,7 +37,6 @@ public class PlayerDeathListener implements Listener {
             if (killClan != null) {
                 int kills = killClan.getKills() + 1;
                 killClan.setKills(kills);
-                killClan.getDB().disconnect();
             }
         }
 
@@ -49,7 +48,6 @@ public class PlayerDeathListener implements Listener {
             if (victimClan != null) {
                 int death = victimClan.getDeath() + 1;
                 victimClan.setDeath(death);
-                victimClan.getDB().disconnect();
             }
         }
     }

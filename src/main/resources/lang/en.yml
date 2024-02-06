@@ -55,6 +55,7 @@ errors:
   battle-not-found: "&cHmm battle request not found!"
   deny-battle: "&aClan %clan_name% deny the clan battle request."
   currently-battle: "&cThis Clan currently are in battles."
+  invalid-clan-name: "&cThis clanName is not valid!"
 
 success:
   bank-deposit: "&eYou deposit &a&l%amount%$&e and now clan have &a&l%balance%&e!"

@@ -57,7 +57,6 @@ public class CManager {
     public List<Clan> getClanById(int clanId) {
         List<Clan> clans = new ArrayList<>();
 
-        try {
             if (!this.database.isConnected())
                 this.database.connect();
 
@@ -79,9 +78,6 @@ public class CManager {
                         .setLock(((boolean) (row[14] == null ? false : (((int) row[14]) == 1 ? true : false))))
                 );
             }
-        } finally {
-            this.database.disconnect();
-        }
 
         return clans;
     }
@@ -167,7 +163,6 @@ public class CManager {
                 );
             }
         }
-        this.database.disconnect();
         return clan;
     }
 
@@ -197,8 +192,6 @@ public class CManager {
             }
         }
 
-        this.database.disconnect();
-
         return clan;
     }
 
@@ -227,7 +220,6 @@ public class CManager {
                 );
             }
         }
-        this.database.disconnect();
         return clan;
     }
 
@@ -693,7 +685,7 @@ public class CManager {
     private List<String> getPlayers(int clanId) {
         List<String> clan = new ArrayList<>();
 
-        try {
+
             if (!this.database.isConnected())
                 this.database.connect();
 
@@ -702,9 +694,6 @@ public class CManager {
             for (Object[] row : rows) {
                 clan.add(String.valueOf(row[2]));
             }
-        } finally {
-            this.database.disconnect();
-        }
 
         return clan;
     }
@@ -795,7 +784,7 @@ public class CManager {
 
                 }
         }
-        this.database.disconnect();
+
     }
 
     public Clan getClanByOwnerPlayer(Player player) {
@@ -820,9 +809,9 @@ public class CManager {
         return null;
     }
 
-    public void disconnect() {
+    public void disconnectDB() {
         if(this.database.isConnected())
-            this.database.disconnect();
+            this.database.disconnectDB();
     }
 
     public boolean updateBalance(Clan clan) {
@@ -839,7 +828,6 @@ public class CManager {
         if(!this.database.isConnected())
             this.database.connect();
         this.database.execute(sql, clan.isLock(), clan.getId());
-        this.database.disconnect();
     }
 
     public void updateRank(Clan clan) {
@@ -847,7 +835,6 @@ public class CManager {
         if(!this.database.isConnected())
             this.database.connect();
         this.database.execute(sql, clan.getRank(), clan.getId());
-        this.database.disconnect();
     }
 
     public List<Clan> topRank() {
@@ -875,7 +862,6 @@ public class CManager {
                 );
             }
         }
-        this.database.disconnect();
         return clan;
     }
 }

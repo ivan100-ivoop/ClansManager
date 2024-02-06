@@ -157,6 +157,11 @@ public class Utils {
         return true;
     }
 
+    public static boolean isValidClanName(String clanName) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
+        Matcher matcher = pattern.matcher(clanName);
+        return matcher.matches();
+    }
     public static void executeCommand(String command) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
     }

@@ -54,7 +54,6 @@ public class ClansManagerAPI extends PlaceholderExpansion {
         return "";
     }
     private String placeSend(String params,Clan clan){
-        this.clans.disconnect();
         switch (params) {
             case "name":
                 return clan.getName();

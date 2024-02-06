@@ -60,11 +60,10 @@ public class DBManager {
     private void createDatabase() throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + database)) {
             preparedStatement.executeUpdate();
-            System.out.println("Database created or already exists: " + database);
         }
     }
 
-    public void disconnect() {
+    public void disconnectDB() {
         if (isConnected()) {
             try {
                 connection.close();
@@ -113,8 +112,6 @@ public class DBManager {
                 return true;
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                disconnect();
             }
         }
         return false;
@@ -145,8 +142,6 @@ public class DBManager {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                disconnect();
             }
         }
         return false;
@@ -162,8 +157,6 @@ public class DBManager {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            disconnect();
         }
         return false;
     }
@@ -194,8 +187,6 @@ public class DBManager {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                disconnect();
             }
         }
 

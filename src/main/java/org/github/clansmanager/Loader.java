@@ -49,7 +49,7 @@ public final class Loader extends JavaPlugin {
     @Override
     public void onDisable() {
         this.restoreInv();
-        this.db.disconnect();
+        this.db.disconnectDB();
         logger.log(Level.INFO, "Successful disabled!");
     }
 
