@@ -47,7 +47,7 @@ public class Update {
     }
 
     public void stop() {
-        if (!updateCheckTask.isCancelled()) {
+        if(updateCheckTask != null && !updateCheckTask.isCancelled()){
             updateCheckTask.cancel();
         }
     }
@@ -102,6 +102,9 @@ public class Update {
                     update.put("current_version", currentVersion);
                     update.put("url", updateURL);
                     connection.disconnect();
+                    if(updateCheckTask != null && !updateCheckTask.isCancelled()){
+                        updateCheckTask.cancel();
+                    }
                 }
             } else {
                 Loader.logger.log(Level.WARNING, "Checking for updates failed...");
@@ -129,5 +132,14 @@ public class Update {
             Loader.logger.log(Level.WARNING, "You are up-to-date!");
         }
         Loader.logger.log(Level.WARNING, "============== ClansManager Update ==============");
+    }
+
+    public void AdminJoin(Player player){
+        Map<String, String> update = getUpdate();
+        if (update.get("update").equalsIgnoreCase("yes")) {
+            if (player.hasPermission("clansmanager.update")) {
+                player.sendMessage(Utils.fixColors(getUpdateMessage(update)));
+            }
+        }
     }
 }

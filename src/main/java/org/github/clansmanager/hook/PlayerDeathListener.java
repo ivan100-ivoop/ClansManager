@@ -16,6 +16,7 @@ import org.github.clansmanager.game.ClanBattleGame;
 import org.github.clansmanager.utils.Clan;
 import org.github.clansmanager.utils.ClanChestManager;
 import org.github.clansmanager.utils.Messages;
+import org.github.clansmanager.utils.Update;
 
 import java.util.Iterator;
 
@@ -23,9 +24,12 @@ public class PlayerDeathListener implements Listener {
     private final CManager clans;
     private final ClanChestManager chest;
 
-    public PlayerDeathListener() {
+    private final Update updater;
+
+    public PlayerDeathListener(Update updater) {
         this.chest = new ClanChestManager();
         this.clans = new CManager();
+        this.updater = updater;
     }
 
     private void killDetect(Player victim, Player killer) {
@@ -54,7 +58,9 @@ public class PlayerDeathListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = (Player) event.getPlayer();
         Loader.instance.restoreInv();
+        this.updater.AdminJoin(player);
     }
 
     @EventHandler

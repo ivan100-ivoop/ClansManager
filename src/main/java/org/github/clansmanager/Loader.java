@@ -42,7 +42,7 @@ public final class Loader extends JavaPlugin {
         this.init();
         this.updater.start();
 
-        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(this.updater), this);
         logger.log(Level.INFO, "Successful enabled!");
     }
 
