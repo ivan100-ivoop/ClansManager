@@ -23,32 +23,36 @@ public class Update {
     private long updateInterval = Loader.instance.getConfig().getLong("update-checker", 0);
 
     public Update(){
-        updateCheckTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Map<String, String> update = getUpdate();
-                if (update.get("update").equalsIgnoreCase("yes")) {
-                    Iterator player = Bukkit.getOnlinePlayers().iterator();
-                    while(player.hasNext()) {
-                        Player p = (Player)player.next();
-                        if (p.hasPermission("clansmanager.update")) {
-                            p.sendMessage(Utils.fixColors(getUpdateMessage(update)));
+        if(updateInterval > 0) {
+            updateCheckTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Map<String, String> update = getUpdate();
+                    if (update.get("update").equalsIgnoreCase("yes")) {
+                        Iterator player = Bukkit.getOnlinePlayers().iterator();
+                        while (player.hasNext()) {
+                            Player p = (Player) player.next();
+                            if (p.hasPermission("clansmanager.update")) {
+                                p.sendMessage(Utils.fixColors(getUpdateMessage(update)));
+                            }
                         }
                     }
                 }
-           }
-        };
+            };
+        }
     }
 
     public void start(){
-        if(updateInterval != 0) {
+        if(updateInterval > 0) {
             updateCheckTask.runTaskTimer(Loader.instance, 0L, 1200L * updateInterval);
         }
     }
 
     public void stop() {
-        if(updateCheckTask != null && !updateCheckTask.isCancelled()){
-            updateCheckTask.cancel();
+        if(updateCheckTask != null){
+            if(!updateCheckTask.isCancelled()) {
+                updateCheckTask.cancel();
+            }
         }
     }
 
@@ -92,6 +96,13 @@ public class Update {
 
                 if(response.isHaveError()){
                     Loader.logger.log(Level.WARNING, String.format("Error: %s", response.getMessage()));
+
+                    update.put("update", "no");
+                    update.put("version", Loader.instance.getDescription().getVersion());
+                    update.put("current_version", Loader.instance.getDescription().getVersion());
+                    update.put("url", "https://github.com/ivan100-ivoop/ClansManager/releases/latest");
+
+                    return update;
                 } else {
                     String currentVersion = String.format("v%s",Loader.instance.getDescription().getVersion());
                     String latestVersion = response.getData().getTagName(currentVersion);
@@ -101,16 +112,28 @@ public class Update {
                     update.put("version", latestVersion);
                     update.put("current_version", currentVersion);
                     update.put("url", updateURL);
-                    connection.disconnect();
-                    if(updateCheckTask != null && !updateCheckTask.isCancelled()){
-                        updateCheckTask.cancel();
+
+                    if(updateCheckTask != null){
+                        if(!updateCheckTask.isCancelled()) {
+                            updateCheckTask.cancel();
+                        }
                     }
+
+                    connection.disconnect();
+                    return update;
                 }
             } else {
                 Loader.logger.log(Level.WARNING, "Checking for updates failed...");
+                update.put("update", "no");
+                update.put("version", Loader.instance.getDescription().getVersion());
+                update.put("current_version", Loader.instance.getDescription().getVersion());
+                update.put("url", "https://github.com/ivan100-ivoop/ClansManager/releases/latest");
+
+                return update;
             }
         } catch (Exception e) {
             e.printStackTrace();
+
             update.put("update", "no");
             update.put("current_version", String.format("v%s",Loader.instance.getDescription().getVersion()));
             update.put("version", String.format("v%s",Loader.instance.getDescription().getVersion()));
