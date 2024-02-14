@@ -4,16 +4,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.github.clansmanager.Admin.AdminCommands;
 import org.github.clansmanager.CManager;
+import org.github.clansmanager.Loader;
 import org.github.clansmanager.game.Arena;
 import org.github.clansmanager.utils.Clan;
 import org.github.clansmanager.utils.Messages;
 import org.github.clansmanager.utils.SubCommand;
 import org.github.clansmanager.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 public class Admin extends SubCommand {
 
@@ -64,38 +63,101 @@ public class Admin extends SubCommand {
             }
         }
 
-        if(args[0].equalsIgnoreCase("setSpawn1")){
+        if(args[0].equalsIgnoreCase("arena")){
             if(sender instanceof Player) {
                 Player player = (Player) sender;
-                Arena.setSpawn1(player.getLocation());
-                player.sendMessage(Messages.withPrefix("success.battle-spawn-one", "&aSpawn1 Saved!"));
-            }
-            return true;
-        }
 
-        if(args[0].equalsIgnoreCase("setSpawn2")){
-            if(sender instanceof Player) {
-                Player player = (Player) sender;
-                Arena.setSpawn2(player.getLocation());
-                player.sendMessage(Messages.withPrefix("success.battle-spawn-two", "&aSpawn2 Saved!"));
-            }
-            return true;
-        }
+                if(args[1].equalsIgnoreCase("select")) {
+                    Loader.tempId = args[2];
+                    Arena arena = Loader.arenas.get(Loader.tempId);
+                    player.sendMessage(Messages.withPrefix("success.arena.select", "&aSelected Arena %arena%!").replace("%arena%", arena.ARENA_NAME));
+                    return true;
+                }
 
-        if(args[0].equalsIgnoreCase("setInv1")){
-            if(sender instanceof Player) {
-                Player player = (Player) sender;
-                Arena.setInvOne(player.getInventory());
-                player.sendMessage(Messages.withPrefix("success.battle-inv-one", "&aInv1 Saved!"));
-            }
-            return true;
-        }
+                if(args[1].equalsIgnoreCase("create")) {
+                    Loader.tempId = UUID.randomUUID().toString();
+                    Loader.arenas.put(Loader.tempId, new Arena().setID(Loader.tempId)
+                            .setLocation(player.getLocation()));
+                    player.sendMessage(Messages.withPrefix("success.arena.create", "&aArena Created!"));
+                    return true;
+                }
 
-        if(args[0].equalsIgnoreCase("setInv2")){
-            if(sender instanceof Player) {
-                Player player = (Player) sender;
-                Arena.setInvTwo(player.getInventory());
-                player.sendMessage(Messages.withPrefix("success.battle-inv-two", "&aInv2 Saved!"));
+                if(args[1].equalsIgnoreCase("name")) {
+
+                    if(Loader.tempId == null){
+                        player.sendMessage(Messages.withPrefix("errors.arena.select", "&cSelect Arena!"));
+                        return true;
+                    }
+
+                    Loader.arenas.get(Loader.tempId).setName(getName(Arrays.copyOfRange(args, 1, args.length)));
+                    player.sendMessage(Messages.withPrefix("success.arena.name", "&aArena Name Updated!"));
+                    return true;
+                }
+
+                if(args[1].equalsIgnoreCase("size")) {
+
+                    if(Loader.tempId == null){
+                        player.sendMessage(Messages.withPrefix("errors.arena.select", "&cSelect Arena!"));
+                        return true;
+                    }
+
+                    Loader.arenas.get(Loader.tempId).setMaxClans(Integer.parseInt(args[2]));
+                    player.sendMessage(Messages.withPrefix("success.arena.size", "&aArena Clan Max Updated!"));
+                    return true;
+                }
+
+                if(args[1].equalsIgnoreCase("spawn")) {
+
+                    if(Loader.tempId == null){
+                        player.sendMessage(Messages.withPrefix("errors.arena.select", "&cSelect Arena!"));
+                        return true;
+                    }
+
+                    Loader.arenas.get(Loader.tempId).addSpawn(player.getLocation());
+                    player.sendMessage(Messages.withPrefix("success.arena.spawn", "&aArena Spawn Created!"));
+                    return true;
+                }
+
+
+                if(args[1].equalsIgnoreCase("tp")) {
+
+                    if(Loader.tempId == null){
+                        player.sendMessage(Messages.withPrefix("errors.arena.select", "&cSelect Arena!"));
+                        return true;
+                    }
+                    player.teleport(Loader.arenas.get(Loader.tempId).ARENA_LOCATION);
+                    return true;
+                }
+
+
+                if(args[1].equalsIgnoreCase("inventory")) {
+
+                    if(Loader.tempId == null){
+                        player.sendMessage(Messages.withPrefix("errors.arena.select", "&cSelect Arena!"));
+                        return true;
+                    }
+
+                    Loader.arenas.get(Loader.tempId).addInventory(player.getInventory().getContents());
+                    player.sendMessage(Messages.withPrefix("success.arena.inventory", "&aArena Inventory Created!"));
+                    return true;
+                }
+
+                if(args[1].equalsIgnoreCase("save")) {
+
+                    if(Loader.tempId == null){
+                        player.sendMessage(Messages.withPrefix("errors.arena.select", "&cSelect Arena!"));
+                        return true;
+                    }
+
+                    try {
+                        Loader.arenas.get(Loader.tempId).saveArena();
+                        Loader.tempId = null;
+                        player.sendMessage(Messages.withPrefix("success.arena.save", "&aArena Saved!"));
+                    } catch (IOException e) {
+                        player.sendMessage(Messages.withPrefix("errors.arena.save", "&cArena not saved!"));
+                    }
+                    return true;
+                }
             }
             return true;
         }
@@ -161,11 +223,34 @@ public class Admin extends SubCommand {
 
     }
 
+    private String getName(String ...args){
+        StringBuilder out = new StringBuilder();
+        for (int i=1; i<args.length; i++){
+            out.append(args[i]).append(" ");
+        }
+        return out.toString();
+    }
+
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
 
         if (args.length == 1 && sender.hasPermission(this.getPermission())) {
-            return Arrays.asList("setInv1", "setInv2", "setSpawn1", "setSpawn2", "lock", "spychat", "chest", "balance", "remove", "kick", "setOwner");
+            return Arrays.asList("arena", "lock", "spychat", "chest", "balance", "remove", "kick", "setOwner");
+        }
+
+        if (args.length >= 2 && sender.hasPermission(this.getPermission())) {
+            if (args[0].equalsIgnoreCase("arena")) {
+                if (args[1].equalsIgnoreCase("select")){
+                    List<String> tab = new ArrayList<>();
+                    for (Map.Entry<String, Arena> arena : Loader.arenas.entrySet()){
+                        tab.add(arena.getValue().ARENA_ID);
+                    }
+                    return tab;
+                }
+
+                return Arrays.asList("select", "create", "save", "name", "spawn", "inventory", "size", "tp");
+            }
+
         }
 
         if (args.length == 2 && sender.hasPermission(this.getPermission())) {

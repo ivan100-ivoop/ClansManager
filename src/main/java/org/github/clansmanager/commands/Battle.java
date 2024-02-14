@@ -112,7 +112,12 @@ public class Battle extends SubCommand {
                 return true;
             }
 
-            if(Loader.clan_battle.containsKey(clan2.getName()) || Utils.isInBattle(clan2)){
+            if(Loader.clan_battle.containsKey(clan2.getName())){
+                player.sendMessage(Messages.withPrefix("errors.currently-battle", "&cThis Clan currently are in battles."));
+                return true;
+            }
+
+            if(Utils.isInBattle(clan2)){
                 player.sendMessage(Messages.withPrefix("errors.currently-battle", "&cThis Clan currently are in battles."));
                 return true;
             }

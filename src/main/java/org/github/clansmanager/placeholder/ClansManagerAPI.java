@@ -53,6 +53,7 @@ public class ClansManagerAPI extends PlaceholderExpansion {
         }
         return "";
     }
+
     private String placeSend(String params,Clan clan){
         switch (params) {
             case "name":

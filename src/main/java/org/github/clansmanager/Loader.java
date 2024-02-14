@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.github.clansmanager.game.Arena;
 import org.github.clansmanager.game.ClanBattleGame;
 import org.github.clansmanager.hook.InvMenuOpen;
 import org.github.clansmanager.hook.PlayerDeathListener;
@@ -34,7 +35,9 @@ public final class Loader extends JavaPlugin {
     private AllClansManager allClansManager;
     private ClansTop clansTop;
     private Update updater = null;
+    public static String tempId = null;
 
+    public static Map<String, Arena> arenas = new HashMap<>();
     public static List<ClanBattleGame> games = new ArrayList<>();
     @Override
     public void onEnable() {
@@ -140,6 +143,8 @@ public final class Loader extends JavaPlugin {
 
         updater = new Update();
         updater.consoleCheck();
+
+        Arena.LoadArenas();
 
         this.restoreInv();
     }

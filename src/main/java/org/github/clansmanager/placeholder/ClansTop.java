@@ -42,7 +42,7 @@ public class ClansTop extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
 
         if (player == null || !player.isOnline())
-            return "";
+            return "---";
 
         if(params.contains("kill")){
             return topKills(params);
@@ -60,7 +60,7 @@ public class ClansTop extends PlaceholderExpansion {
             return topBattle(params);
         }
 
-        return "";
+        return "---";
     }
 
     private String topBattle(String params) {
@@ -68,7 +68,7 @@ public class ClansTop extends PlaceholderExpansion {
         int id = this.getID(params);
 
         if (id < 0 || id >= _clans.size()) {
-            return "";
+            return "---";
         }
 
         return fixInfo(_clans.get(id), "rank");
@@ -79,7 +79,7 @@ public class ClansTop extends PlaceholderExpansion {
         int id = this.getID(params);
 
         if (id < 0 || id >= _clans.size()) {
-            return "";
+            return "---";
         }
 
         return fixInfo(_clans.get(id), "kill");
@@ -90,7 +90,7 @@ public class ClansTop extends PlaceholderExpansion {
         int id = this.getID(params);
 
         if (id < 0 || id >= _clans.size()) {
-            return "";
+            return "---";
         }
 
         return fixInfo(_clans.get(id), "death");
@@ -101,7 +101,7 @@ public class ClansTop extends PlaceholderExpansion {
         int id = this.getID(params);
 
         if (id < 0 || id >= _clans.size()) {
-            return "";
+            return "---";
         }
 
         return fixInfo(_clans.get(id), "balance");
@@ -121,7 +121,7 @@ public class ClansTop extends PlaceholderExpansion {
         if(type.equalsIgnoreCase("rank")){
             return Utils.fixColors(config.getString("clan-top-battle-preset","{clan} &6&l{amount} &aBattle's")
                     .replace("{clan}", clan.getName())
-                    .replace("{amount}", String.valueOf(clan.getRank()))
+                    .replace("{amount}", String.valueOf(((clan.getRank() == -1) ? 0 : clan.getRank())))
             );
         }
 
@@ -138,7 +138,7 @@ public class ClansTop extends PlaceholderExpansion {
                     .replace("{amount}", Loader.eco.format(clan.getBalance()))
             );
         }
-        return " ";
+        return "---";
     }
 
     private int getID(String params) {

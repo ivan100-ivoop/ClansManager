@@ -13,6 +13,7 @@ import org.github.clansmanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ClanBattleGame {
 
@@ -21,6 +22,8 @@ public class ClanBattleGame {
     private static final int GAME_DURATION_SECONDS = Loader.instance.getConfig().getInt("match-time", 1) * 60;
 
     private List<Player> clan1Players, clan2Players;
+
+    private Arena arena = null;
 
     private BukkitRunnable startTimer, progressTimer, gameTimer;
     private Location clan1Location, clan2Location;
@@ -32,6 +35,12 @@ public class ClanBattleGame {
     private boolean isCommand = false;
 
     public ClanBattleGame(Clan clan1, Clan clan2) {
+        this.arena = getRandomArena();
+
+        if(!this.arena.IN_USE){
+            this.arena = getRandomArena();
+        }
+
         this.clan1 = clan1;
         this.clan2 = clan2;
 
@@ -41,6 +50,11 @@ public class ClanBattleGame {
         this.clan1Location = clan1.getLocation();
         this.clan2Location = clan2.getLocation();
     }
+
+    private Arena getRandomArena(){
+        return Loader.arenas.get(new Random().nextInt(Loader.arenas.size()));
+    }
+
     public List<Player> getClanPlayers(Clan clan) {
         List<Player> players = new ArrayList<>();
 
@@ -82,8 +96,8 @@ public class ClanBattleGame {
     public void startProgress() {
         if (isRunning) {
 
-            teleportPlayers(clan1Players, Arena.getSpawn1());
-            teleportPlayers(clan2Players, Arena.getSpawn2());
+            teleportPlayers(clan1Players, this.arena.SPAWN.get(0));
+            teleportPlayers(clan2Players, this.arena.SPAWN.get(1));
 
             saveInv(clan1Players);
             saveInv(clan2Players);
@@ -306,10 +320,10 @@ public class ClanBattleGame {
 
     private void giveItems() {
         for (Player player : clan1Players) {
-            player.getInventory().setContents(Arena.getInvOne());
+            player.getInventory().setContents(this.arena.INVENTORY.get(0));
         }
         for (Player player : clan2Players) {
-            player.getInventory().setContents(Arena.getInvTwo());
+            player.getInventory().setContents(this.arena.INVENTORY.get(1));
         }
     }
 
