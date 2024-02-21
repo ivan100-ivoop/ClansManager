@@ -7,7 +7,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.github.clansmanager.Loader;
@@ -15,7 +14,6 @@ import org.github.clansmanager.Loader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -72,7 +70,7 @@ public class Arena {
         }
 
         if (!arenaFile.exists()) {
-            FileConfiguration arena = YamlConfiguration.loadConfiguration(arenaFile);
+            YamlConfiguration arena = new YamlConfiguration();
 
             // arena name
             arena.set("arena.name", this.ARENA_NAME);
@@ -103,32 +101,30 @@ public class Arena {
             }
 
             // Inventory save
-            for (int i = 0; i< INVENTORY.size(); i++){
-                arena.set(String.format("arena.inv.%s", i), itemStackArrayToString(this.INVENTORY.get(i)));
+            YamlConfiguration config = new YamlConfiguration();
+            for (int i = 0; i < INVENTORY.size(); i++) {
+                if (INVENTORY.get(i) != null) {
+                    ItemStack[] inv = INVENTORY.get(i);
+                    for (int t = 0; t < inv.length; t++) {
+                        ItemStack item = inv[t];
+                        if (item != null && item.getType() != Material.AIR) {
+                            String keyPrefix = String.format("%d.%d", i, t);
+                            config.set(keyPrefix + ".type", item.getType().toString());
+                            config.set(keyPrefix + ".amount", item.getAmount());
+                            if (item.hasItemMeta()) {
+                                config.set(keyPrefix + ".meta", itemMetaToString(item));
+                            }
+                        }
+                    }
+                }
             }
+            arena.set("arena.inv", config);
 
             arena.save(arenaFile);
 
             return true;
         }
         return false;
-    }
-
-    private YamlConfiguration itemStackArrayToString(ItemStack[] items) {
-        YamlConfiguration config = new YamlConfiguration();
-        if (items != null) {
-            for (int i = 0; i < items.length; i++) {
-                ItemStack item = items[i];
-                if (item != null) {
-                    config.set(String.format("content.%d.type", i), item.getType().toString());
-                    config.set(String.format("content.%d.amount", i), item.getAmount());
-                    config.set(String.format("content.%d.meta", i), itemMetaToString(item));
-                } else {
-                    config.set(String.format("content.%d.meta", i), null); // Handle null ItemStacks
-                }
-            }
-        }
-        return config;
     }
 
     private static String itemMetaToString(ItemStack itemStack) {
@@ -211,14 +207,21 @@ public class Arena {
         if (invSection != null) {
             for (String key : invSection.getKeys(false)) {
                 List<ItemStack> items = new ArrayList<>();
-                ConfigurationSection subInvSection = config.getConfigurationSection(String.format("arena.inv.%s.content", key));
+                ConfigurationSection subInvSection = config.getConfigurationSection(String.format("arena.inv.%s", key));
                 if (subInvSection != null) {
                     for (String subKey : subInvSection.getKeys(false)) {
-                        String material = config.getString(String.format("arena.inv.%s.content.%s.type", key, subKey), "");
-                        int amount = config.getInt(String.format("arena.inv.%s.content.%s.amount", key, subKey), 1);
-                        ItemMeta meta = stringToItemMeta(config.getString(String.format("arena.inv.%s.content.%s.meta", key, subKey), ""));
+                        String material = config.getString(String.format("arena.inv.%s.%s.type", key, subKey), "");
+                        int amount = config.getInt(String.format("arena.inv.%s.%s.amount", key, subKey), 1);
                         ItemStack item = new ItemStack(Material.valueOf(material), amount);
-                        item.setItemMeta(meta);
+
+                        if (config.isString(String.format("arena.inv.%s.%s.meta", key, subKey))) {
+                            String metaSection = config.getString(String.format("arena.inv.%s.%s.meta", key, subKey));
+                            if (metaSection != null && !metaSection.isEmpty()) {
+                                ItemMeta meta = stringToItemMeta(metaSection);
+                                item.setItemMeta(meta);
+                            }
+                        }
+
                         items.add(item);
                     }
                     arena.addInventory(items.toArray(new ItemStack[0]));
@@ -226,6 +229,7 @@ public class Arena {
             }
         }
     }
+
     private static void loadSpawns(FileConfiguration config, Arena arena) {
         ConfigurationSection spawnSection = config.getConfigurationSection("arena.spawn");
         if (spawnSection != null) {

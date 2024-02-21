@@ -38,7 +38,7 @@ public class ClanList extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Get list of all Clans!";
+        return Messages.onlyMessage("commands.list", "Get list of all Clans!");
     }
 
     @Override
@@ -86,6 +86,9 @@ public class ClanList extends SubCommand {
                 @Override
                 public boolean click(Player p, InvMenuOpen menu, InvMenuOpen.Row row, int slot, ItemStack item) {
                     if(item != null && !item.getType().isAir()) {
+                        if(item.getItemMeta().getCustomModelData() > 0){
+                            return true;
+                        }
                         List<Clan> _clans = clans.getClanById(item.getItemMeta().getCustomModelData());
                         if (_clans != null && _clans.size() >= 0) {
                             for (Clan _clan : _clans) {

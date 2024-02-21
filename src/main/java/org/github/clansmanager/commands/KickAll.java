@@ -30,7 +30,7 @@ public class KickAll extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "KickAll members from your clan!";
+        return Messages.onlyMessage("commands.kick_all", "KickAll members from your clan!");
     }
 
     @Override

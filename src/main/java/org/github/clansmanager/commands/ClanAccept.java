@@ -29,7 +29,7 @@ public class ClanAccept extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Accept clan invite!";
+        return Messages.onlyMessage("commands.accept", "Accept clan invite!");
     }
 
     @Override

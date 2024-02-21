@@ -33,7 +33,7 @@ public class SetOptions extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Set clan Options!";
+        return Messages.onlyMessage("commands.options", "Set clan Options!");
     }
 
     @Override

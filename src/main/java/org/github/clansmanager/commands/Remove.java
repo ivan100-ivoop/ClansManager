@@ -31,7 +31,7 @@ public class Remove extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Remove You Clan!";
+        return Messages.onlyMessage("commands.remove", "Remove You Clan!");
     }
 
     @Override

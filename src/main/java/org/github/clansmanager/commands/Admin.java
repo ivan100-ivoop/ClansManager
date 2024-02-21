@@ -34,7 +34,7 @@ public class Admin extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Clan Admin Commands!";
+        return Messages.onlyMessage("commands.admin", "Clan Admin Commands!");
     }
 
     @Override

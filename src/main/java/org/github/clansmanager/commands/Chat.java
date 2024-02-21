@@ -34,7 +34,7 @@ public class Chat extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Send messages to your clan members!";
+        return Messages.onlyMessage("commands.chat", "Send messages to your clan members!");
     }
 
     @Override

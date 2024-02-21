@@ -28,7 +28,7 @@ public class Chest extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Clan Personal Chest!";
+        return Messages.onlyMessage("commands.chest", "Clan Personal Chest!");
     }
 
     @Override

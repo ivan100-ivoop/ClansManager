@@ -39,7 +39,7 @@ public class AddPlayer extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Add new Player to your Clan!";
+        return Messages.onlyMessage("commands.add", "Add new Player to your Clan!");
     }
 
     @Override

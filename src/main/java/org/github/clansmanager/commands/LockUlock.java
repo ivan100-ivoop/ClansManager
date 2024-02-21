@@ -29,7 +29,7 @@ public class LockUlock extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Lock your clan commands for members!";
+        return Messages.onlyMessage("commands.lock", "Lock your clan commands for members!");
     }
 
     @Override

@@ -77,6 +77,9 @@ public final class Loader extends JavaPlugin {
         allClansManager.register();
         clansTop.register();
         this.updater.start();
+        arenas = new HashMap<>();
+        Arena.LoadArenas();
+
         return true;
     }
 
@@ -145,6 +148,10 @@ public final class Loader extends JavaPlugin {
         updater.consoleCheck();
 
         Arena.LoadArenas();
+
+        for (Map.Entry<String, Arena> arena : Loader.arenas.entrySet()){
+            logger.log(Level.INFO, String.format("Clan Arena %s loaded!", arena.getValue().ARENA_NAME));
+        }
 
         this.restoreInv();
     }

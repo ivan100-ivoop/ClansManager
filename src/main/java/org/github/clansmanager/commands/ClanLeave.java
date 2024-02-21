@@ -29,7 +29,7 @@ public class ClanLeave extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Leave Your Clan!";
+        return Messages.onlyMessage("commands.leave", "Leave Your Clan!");
     }
 
     @Override

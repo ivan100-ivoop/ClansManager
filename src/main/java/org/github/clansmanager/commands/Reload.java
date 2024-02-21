@@ -17,7 +17,7 @@ public class Reload extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Reload Plugin Configuration!";
+        return Messages.onlyMessage("commands.reload", "Reload Plugin Configuration!");
     }
 
     @Override

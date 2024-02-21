@@ -32,7 +32,7 @@ public class Kick extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Kick member from your clan!";
+        return Messages.onlyMessage("commands.kick", "Kick member from your clan!");
     }
 
     @Override

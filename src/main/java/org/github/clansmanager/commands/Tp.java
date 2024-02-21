@@ -28,7 +28,7 @@ public class Tp extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Teleport to Your ClanBase!";
+        return Messages.onlyMessage("commands.tp", "Teleport to Your ClanBase!");
     }
 
     @Override

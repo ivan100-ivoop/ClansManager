@@ -13,6 +13,7 @@ import org.github.clansmanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class ClanBattleGame {
@@ -37,10 +38,6 @@ public class ClanBattleGame {
     public ClanBattleGame(Clan clan1, Clan clan2) {
         this.arena = getRandomArena();
 
-        if(!this.arena.IN_USE){
-            this.arena = getRandomArena();
-        }
-
         this.clan1 = clan1;
         this.clan2 = clan2;
 
@@ -52,7 +49,14 @@ public class ClanBattleGame {
     }
 
     private Arena getRandomArena(){
-        return Loader.arenas.get(new Random().nextInt(Loader.arenas.size()));
+        Arena __arena = null;
+        for (Map.Entry<String, Arena> _arena : Loader.arenas.entrySet()){
+            if(!_arena.getValue().IN_USE){
+                __arena = _arena.getValue();
+            }
+        }
+        __arena.IN_USE = true;
+        return __arena;
     }
 
     public List<Player> getClanPlayers(Clan clan) {
@@ -158,6 +162,7 @@ public class ClanBattleGame {
     public void forceEnd(){
         isRunning = false;
         isAllowPvP = false;
+        arena.IN_USE = false;
         gameTimer.cancel();
         resetAll();
         broadcastMessage(Messages.withPrefix("battle.force-end-battle", "&cAdmin has forced an end to all clan battles!"));
@@ -170,6 +175,7 @@ public class ClanBattleGame {
     private void endGame() {
         isRunning = false;
         isAllowPvP = false;
+        arena.IN_USE = false;
         resetAll();
         calculateWinners();
         teleportPlayers(clan1Players, clan1Location);
@@ -361,7 +367,7 @@ public class ClanBattleGame {
             if(p != null)
                 p.sendMessage(msg);
         }
-        for(Player p : this.getClanPlayers(clan1)){
+        for(Player p : this.getClanPlayers(clan2)){
             if(p != null)
                 p.sendMessage(msg);
 

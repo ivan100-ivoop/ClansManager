@@ -23,7 +23,7 @@ public class Help extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Display help information about ClansManager commands.";
+        return Messages.onlyMessage("help.command", "Display help information about ClansManager commands.");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Help extends SubCommand {
             }
         }
 
-        sender.sendMessage("/clan set <prefix, owner, tp> - Set various properties of your clan");
+        sender.sendMessage(Messages.onlyMessage("commands.help", "/clan set <prefix, owner, tp> - Set various properties of your clan\""));
         // Add more help information as needed
         return true;
     }

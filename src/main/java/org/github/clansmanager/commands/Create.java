@@ -28,7 +28,7 @@ public class Create extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Create Your Clan!";
+        return Messages.onlyMessage("commands.create", "Create Your Clan!");
     }
 
     @Override

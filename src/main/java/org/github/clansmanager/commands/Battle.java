@@ -36,7 +36,7 @@ public class Battle extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Clan battle game!";
+        return Messages.onlyMessage("commands.battle", "Clan battle game!");
     }
 
     @Override

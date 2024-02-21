@@ -36,7 +36,7 @@ public class Bank extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Your Clan bank";
+        return Messages.onlyMessage("commands.bank", "Your Clan bank");
     }
 
     @Override
